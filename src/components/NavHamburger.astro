@@ -1,0 +1,86 @@
+---
+
+---
+
+<label for="__check-hamburger">
+    <input type="checkbox" id="__check-hamburger" style="display: none;" />
+    <div class="hamburger">
+        <span class="container">
+            <span class="top"></span>
+            <span class="middle"></span>
+            <span class="bottom"></span>
+        </span>
+    </div>
+</label>
+
+<style lang="scss">
+    @import "@/styles/defines.scss";
+    .hamburger {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        .container {
+            position: relative;
+            width: 16px;
+            height: 14px;
+            overflow: hidden;
+        }
+        .container > span {
+            position: absolute;
+            width: 16px;
+            height: 2px;
+            transition:
+                top 0.25s,
+                background-color 0.5s,
+                transform 0.25s;
+            background-color: var(--font-color);
+            #__check-hamburger:checked ~ & {
+                background-color: transparent;
+                background-color: var(--font-color-2);
+            }
+        }
+        .top {
+            top: 0;
+            left: 0;
+            transform: translate(0);
+        }
+        .middle {
+            top: 6px;
+            left: 0;
+            transform: translate(8px);
+        }
+        .bottom {
+            top: 12px;
+            left: 0;
+            transform: translate(4px);
+        }
+        &:hover {
+            .top {
+                transform: translate(4px);
+            }
+            .middle {
+                transform: translate(0);
+            }
+            .bottom {
+                transform: translate(8px);
+            }
+        }
+        #__check-hamburger:checked ~ & {
+            .top {
+                top: 6px;
+                transform: translate(0) rotate(-135deg);
+            }
+            .middle {
+                top: 6px;
+                transform: translate(16px);
+            }
+            .bottom {
+                top: 6px;
+                transform: translate(0) rotate(135deg);
+            }
+        }
+    }
+</style>

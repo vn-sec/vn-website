@@ -1,0 +1,27 @@
+// dark
+:root,
+[data-theme="light"] {
+    --background-color: #ffffff;
+    --nav-background-color: #f6f7f9;
+    --nav-background-color-top: #{rgba(#f6f7f9, 0.75)};
+    --nav-background-color-bottom: #{rgba(#f6f7f9, 0.75)};
+    --footer-background-color: #f6f7f9;
+    --font-color: #17181c;
+    --font-color-2: #353841;
+    --primary-color: #3d50f5;
+    --secondary-color: #7c89f6;
+    --nav-hairline-color: #dddee0;
+}
+
+[data-theme="dark"] {
+    --background-color: #17181c;
+    --nav-background-color: #23262f;
+    --nav-background-color-top: #{rgba(#23262f, 0.75)};
+    --nav-background-color-bottom: #{rgba(#23262f, 0.75)};
+    --footer-background-color: #23262f;
+    --font-color: #ffffff;
+    --font-color-2: #c1c3c8;
+    --primary-color: #b3c7ff;
+    --secondary-color: #8290b8;
+    --nav-hairline-color: #373a42;
+}

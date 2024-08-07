@@ -1,0 +1,44 @@
+---
+import MixinIconTextReact from "./MixinIconText";
+
+interface Props {
+    text: string;
+}
+---
+
+<MixinIconTextReact {...Astro.props} />
+
+<style lang="scss" is:global>
+    nav {
+        [data-has-icon="true"] {
+            $icon-size-title: 1.7em;
+            $icon-size-inline: 1em;
+
+            [data-icon-style] + span {
+                margin-left: calc($icon-size-title * 0.4) !important;
+            }
+
+            // data-icon-style: inline title non-hover
+            [data-icon-style~="inline"] {
+                display: inline-block;
+                vertical-align: middle;
+                line-height: 1;
+                margin: 0 calc($icon-size-inline * 0.4);
+                & > svg {
+                    height: $icon-size-inline;
+                }
+            }
+            [data-icon-style~="title"] {
+                display: inline-block;
+                vertical-align: middle;
+                line-height: 1;
+                & > svg {
+                    height: $icon-size-title;
+                }
+            }
+            [data-icon-style~="non-hover"] {
+                color: var(--font-color);
+            }
+        }
+    }
+</style>

@@ -1,0 +1,118 @@
+---
+import siteConfig from "@/site-config";
+
+const conf = siteConfig.page["index"];
+---
+
+<div>
+    <div data-contain="pic">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 281.26 195.4">
+            <g class="initial-adjust">
+                <g>
+                    <polygon data-animate-part-id="a" points="0 0 96.09 192.92 96.09 132.46 0 0"></polygon>
+                    <polygon data-animate-part-id="b" points="102.64 132.56 102.64 192.92 199.32 0 102.64 132.56"
+                    ></polygon>
+                    <polygon data-animate-part-id="c" points="188.76 35.12 206.06 0 281.26 195.4 188.76 35.12"
+                    ></polygon>
+                </g>
+            </g>
+        </svg>
+    </div>
+    <div data-animate-part-id="d" data-contain="title" set:text={conf.title} />
+    <div data-animate-part-id="e" data-contain="description" set:text={conf.description} />
+</div>
+
+<style lang="scss">
+    // animate loglo_a b c, display one by one
+    [data-contain="pic"] {
+        display: block;
+        width: max-content;
+        margin: 0 auto;
+
+        @function svg-scale($percent) {
+            @return translate(#{50% - $percent * 0.5}, #{50% - $percent * 0.5}) scale($percent);
+        }
+        @function part-scale($percent, $mul) {
+            @return translate(#{$mul * ($percent - 100%) * 0.25}, #{- ($percent - 100%) * 0.5}) scale($percent);
+        }
+        .initial-adjust {
+            transform: #{svg-scale(64%)};
+        }
+        svg {
+            $fill-color: var(--font-color);
+            fill: $fill-color;
+            min-width: 10rem;
+            width: 20rem;
+            max-width: 50vw;
+            [data-animate-part-id] {
+                opacity: 0;
+            }
+            @keyframes fade-in-a {
+                to {
+                    opacity: 1;
+                    transform: #{part-scale(100%, -1)};
+                }
+            }
+            @keyframes fade-in-b {
+                to {
+                    opacity: 1;
+                    transform: #{part-scale(100%, 0)};
+                }
+            }
+            @keyframes fade-in-c {
+                to {
+                    opacity: 1;
+                    transform: #{part-scale(100%, 4)};
+                }
+            }
+            // wait gap: 0.15s
+            [data-animate-part-id="a"] {
+                transform: #{part-scale(156.25%, -1)};
+                animation: fade-in-a 0.5s ease-out 0.5s forwards;
+            }
+            [data-animate-part-id="b"] {
+                transform: #{part-scale(156.25%, -2)};
+                animation: fade-in-b 0.5s ease-out 1.15s forwards;
+            }
+            [data-animate-part-id="c"] {
+                transform: #{part-scale(156.25%, -4)};
+                animation: fade-in-c 0.5s ease-out 1.8s forwards;
+            }
+        }
+    }
+    @keyframes fade-in {
+        to {
+            opacity: 1;
+        }
+    }
+    [data-animate-part-id="d"] {
+        opacity: 0;
+        animation: fade-in 0.5s ease-out 2.3s forwards;
+    }
+    [data-animate-part-id="e"] {
+        opacity: 0;
+        animation: fade-in 0.5s ease-out 2.55s forwards;
+    }
+    [data-contain="title"] {
+        display: block;
+        width: 100%;
+        margin: 0 auto;
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+        padding: 0.5rem 0;
+        color: var(--font-size);
+    }
+    [data-contain="description"] {
+        display: block;
+        width: 100%;
+        margin: 0 auto;
+        text-align: center;
+        font-size: 1.2rem;
+        padding: 0.5em 0;
+        color: var(--font-size);
+        max-width: 60vw;
+        text-wrap: wrap;
+        word-wrap: break-word;
+    }
+</style>

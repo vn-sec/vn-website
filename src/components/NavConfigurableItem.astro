@@ -1,0 +1,103 @@
+---
+import type * as NavTypes from "@/types/nav";
+import NavItem from "./NavItem.astro";
+import type { ValueOf } from "node_modules/astro/dist/type-utils";
+
+interface Props {
+    conf: NavTypes.NavConfig;
+    func: keyof NavTypes.NavConfig;
+    activeId?: string;
+}
+
+type DistinguishedNavConfigItem = Array<
+    | {
+          type: "text";
+          value: NavTypes.NavTextItem;
+          active?: boolean;
+      }
+    | {
+          type: "icon";
+          value: NavTypes.NavIconItem;
+          active?: boolean;
+      }
+>;
+
+function distinguishNavItemsFromConfig(
+    navconf: NavTypes.NavConfig,
+    key: keyof NavTypes.NavConfig
+): DistinguishedNavConfigItem {
+    if (!navconf[key]) return [];
+    if (key === "title") {
+        let e = navconf[key];
+        if (!Array.isArray(e)) e = [e];
+        return e.map(item => {
+            if (Object.prototype.hasOwnProperty.call(item, "icon")) {
+                return {
+                    type: "icon",
+                    value: item as NavTypes.NavIconItem
+                };
+            } else {
+                return {
+                    type: "text",
+                    value: item as NavTypes.NavTextItem
+                };
+            }
+        });
+    } else if (key === "content") {
+        let e = navconf[key];
+        if (!Array.isArray(e)) e = [e];
+        return e.map(item => {
+            function isIconType(item: ValueOf<NavTypes.NavConfig>): item is NavTypes.NavIconItem {
+                return Object.prototype.hasOwnProperty.call(item, "icon");
+            }
+            if (isIconType(item)) {
+                return {
+                    type: "icon",
+                    value: item as NavTypes.NavIconItem
+                };
+            } else {
+                return {
+                    type: "text",
+                    value: item as NavTypes.NavTextItem,
+                    active:
+                        typeof item === "string"
+                            ? item === Astro.props.activeId
+                            : typeof item.id === "undefined"
+                              ? item.text === Astro.props.activeId
+                              : item.id === Astro.props.activeId
+                };
+            }
+        });
+    } else if (key === "icon") {
+        let e = navconf[key];
+        if (!Array.isArray(e)) e = [e];
+        return e.map(item => {
+            return {
+                type: "icon",
+                value: item as NavTypes.NavIconItem
+            };
+        });
+    } else return [];
+}
+
+const obj = distinguishNavItemsFromConfig(Astro.props.conf, Astro.props.func);
+---
+
+{
+    (() => {
+        if (!obj) return null;
+        return (
+            <>
+                {obj.map(item => {
+                    if (item.type === "text") {
+                        return <NavItem type={item.type} item={item.value} active={item.active} />;
+                    } else if (item.type === "icon") {
+                        return <NavItem type={item.type} item={item.value} active={item.active} />;
+                    } else {
+                        return null;
+                    }
+                })}
+            </>
+        );
+    })()
+}

@@ -1,0 +1,149 @@
+---
+import NavBarConfig from "@/site-config";
+import NavBar from "@/components/NavBar.astro";
+
+interface Props {
+    title: string;
+    active?: string;
+    useBg?: boolean;
+    defaultTheme?: "light" | "dark";
+    enableThemeSwitch?: boolean;
+    // If true, the slot will be placed below the navbar
+    padTopNav?: boolean;
+}
+
+// const info = {
+//     title: ["Home"],
+//     content: ["About", "Blog", "Projects"],
+//     icon: [icons.NodeList.github]
+// };
+
+const {
+    title,
+    active,
+    useBg = false,
+    defaultTheme = "dark",
+    enableThemeSwitch = false,
+    padTopNav = true
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-theme={defaultTheme}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="V&N Team site" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#4c83c9" />
+        <meta name="msapplication-TileColor" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+    </head>
+    <body>
+        {
+            useBg && (
+                <div class="background">
+                    <div class="bg-mask" />
+                </div>
+            )
+        }
+        <NavBar info={NavBarConfig.navbar} active={active} switchTheme={enableThemeSwitch} />
+        <main class:list={[{ "pad-top-nav": padTopNav }]}><slot /></main>
+    </body>
+</html>
+
+<style is:global lang="scss">
+    @import "@/styles/colors.scss";
+    @import "@/styles/defines.scss";
+    html {
+        background-color: var(--background-color);
+        color: var(--font-color);
+        font-size: $root-font-size;
+        font-family:
+            Inter,
+            Helvetica Neue,
+            Helvetica,
+            PingFang SC,
+            Hiragino Sans GB,
+            Microsoft YaHei,
+            "微软雅黑",
+            Arial,
+            system-ui,
+            sans-serif;
+    }
+    body {
+        margin: 0;
+        padding: 0;
+        & > main {
+            box-sizing: border-box;
+            min-height: 100vh;
+        }
+        & > main.pad-top-nav {
+            padding-top: calc($nav-height + $nav-border-width);
+            min-height: calc(100vh - $nav-height - $nav-border-width);
+        }
+    }
+    code {
+        font-family:
+            MesloLGS Nerd Font Mono,
+            SFMono-Regular,
+            SF Mono,
+            Cascadia Mono,
+            Menlo,
+            Monaco,
+            Lucida Console,
+            Consolas,
+            JetBrains Mono,
+            Liberation Mono,
+            DejaVu Sans Mono,
+            Bitstream Vera Sans Mono,
+            Courier New,
+            monospace;
+    }
+    a {
+        color: var(--primary-color);
+        text-decoration: none;
+        cursor: pointer;
+        transition: color 0.25s;
+        &:hover {
+            color: var(--secondary-color);
+        }
+    }
+    .background {
+        background: url(/images/pattern_bg.png) repeat;
+        width: 100%;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        top: 0;
+        z-index: -9999;
+        animation: bgscroll 40s infinite linear;
+        $background-width: 1200px;
+        $background-height: 1200px;
+        @keyframes bgscroll {
+            from {
+                background-position: 0 $background-height;
+            }
+            to {
+                background-position: 0 0;
+            }
+        }
+        .bg-mask {
+            position: fixed;
+            z-index: -9999;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--background-color);
+            opacity: 0.25;
+            // pointer-events: none;
+        }
+    }
+</style>

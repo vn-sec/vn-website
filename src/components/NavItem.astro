@@ -1,0 +1,38 @@
+---
+import NavTextItem from "./NavItem/NavTextItem.astro";
+import type { Props as NavTextProps } from "./NavItem/NavTextItem.astro";
+import NavIconItem from "./NavItem/NavIconItem.astro";
+import type { Props as NavIconProps } from "./NavItem/NavIconItem.astro";
+import NavThemeItem from "./NavItem/NavThemeItem.astro";
+
+interface TextItemProps {
+    type: "text";
+    item: NavTextProps["item"];
+    active?: boolean;
+}
+
+interface IconItemProps {
+    type: "icon";
+    item: NavIconProps["item"];
+    active?: boolean;
+}
+
+interface ThemeItemProps {
+    type: "theme";
+}
+
+export type Props = TextItemProps | IconItemProps | ThemeItemProps;
+---
+
+{
+    (() => {
+        switch (Astro.props.type) {
+            case "text":
+                return <NavTextItem item={Astro.props.item} active={Astro.props.active} />;
+            case "icon":
+                return <NavIconItem item={Astro.props.item} active={Astro.props.active} />;
+            case "theme":
+                return <NavThemeItem />;
+        }
+    })()
+}

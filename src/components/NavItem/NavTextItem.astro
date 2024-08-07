@@ -1,0 +1,36 @@
+---
+import type { NavTextItems, NavTextStdItem } from "@/types/nav";
+import MixinIconText from "./MixinIconText.astro";
+
+export interface Props {
+    item: NavTextItems;
+    active?: boolean;
+}
+
+const { item: items, active } = Astro.props;
+
+function stdfyTextItems(items: NavTextItems): NavTextStdItem[] {
+    if (!Array.isArray(items)) {
+        items = [items];
+    }
+    return items.map(item => {
+        if (typeof item === "string") {
+            return { text: item };
+        } else {
+            return item;
+        }
+    });
+}
+
+const textItems = stdfyTextItems(items);
+---
+
+{
+    textItems.map(item => (
+        <li class:list={[{ active: active }]}>
+            <a href={item.link} target={item.target}>
+                <MixinIconText text={item.text} />
+            </a>
+        </li>
+    ))
+}

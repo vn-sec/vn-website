@@ -1,0 +1,15 @@
+navbar:
+  title: :vn(title):V&N Team
+  content:
+    - text: Home
+      link: /
+    - Awards
+    - Members
+    - Join Us
+  icon:
+    - ':github:'
+
+page:
+  index:
+    title: V&N Team
+    description: An Union CTF Team From China

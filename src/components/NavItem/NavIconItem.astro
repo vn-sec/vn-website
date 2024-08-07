@@ -1,0 +1,64 @@
+---
+import type { NavIconItem, NavIconItems, NavIconStdItem, IconElement, IconId } from "@/types/nav";
+import * as icons from "@/icons";
+import Icon from "@/components/Icon";
+
+export interface Props {
+    item: NavIconItems;
+    active?: boolean;
+}
+
+const { item: items, active } = Astro.props;
+
+function isIconItemType(item: NavIconItem): item is NavIconStdItem<IconId | IconElement> {
+    return Object.prototype.hasOwnProperty.call(item, "icon");
+}
+
+function stdfyIconItemss(items: NavIconItems): NavIconStdItem[] {
+    if (!Array.isArray(items)) {
+        items = [items];
+    }
+    return items.map(item => {
+        if (typeof item === "string") {
+            // iconId
+            let iconId = /^:(.+):/.exec(item)![1] as keyof typeof icons;
+            let iconItem = { icon: icons[iconId] };
+            if (!iconItem) {
+                throw new Error(`Icon ${iconId} not found`);
+            }
+            return iconItem;
+        } else if (isIconItemType(item)) {
+            // NavIconItem
+            if (typeof item.icon === "string") {
+                let iconId = /^:(.+):/.exec(item.icon)![1] as keyof typeof icons;
+                let iconItem = { icon: icons[iconId] };
+                if (!iconItem) {
+                    throw new Error(`Icon ${iconId} not found`);
+                }
+                return iconItem;
+            } else {
+                return item as NavIconStdItem<IconElement>;
+            }
+        } else {
+            // IconElement
+            return {
+                icon: item
+            };
+        }
+    });
+}
+
+const stdItems = stdfyIconItemss(items);
+---
+
+{
+    stdItems.map(item => {
+        return (
+            <li class:list={[{ active: active }]}>
+                <a href={item.link} target={item.target} title={item.title || undefined}>
+                    <Icon icon={item.icon} />
+                </a>
+            </li>
+        );
+    })
+}

@@ -1,0 +1,78 @@
+---
+console.log(Astro.props)
+---
+
+<li class="nav-item__toggle-theme" id="toggle-theme">
+    <span class="check">
+        <span class="icon">
+            <span class="icon-item icon-sun"></span>
+            <span class="icon-item icon-moon"></span>
+        </span>
+    </span>
+</li>
+
+<style lang="scss">
+    @import "@/styles/colors.scss";
+    .nav-item__toggle-theme {
+        padding: 0 0.5rem;
+    }
+    .check {
+        width: 1.1rem;
+        height: 1.1rem;
+        border-radius: 50%;
+        cursor: pointer;
+        background-color: var(--background-color);
+        box-shadow:
+            0 0px 1px var(--font-color-2) inset,
+            0 0px 1px var(--font-color) inset;
+        transition:
+            box-shadow 0.25s ease,
+            background-color 0.25s ease;
+        &:hover {
+            background-color: var(--nav-background-color);
+            box-shadow:
+                0 0px 1px var(--primary-color) inset,
+                0 0px 1px var(--secondary-color) inset;
+        }
+    }
+    .icon {
+        position: relative;
+        display: block;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    .icon-sun {
+        --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
+    }
+    .icon-moon {
+        --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
+    }
+    .icon-item {
+        display: none;
+        position: absolute;
+        top: calc((1.1rem - 1.1rem / 1.414) / 2);
+        left: calc((1.1rem - 1.1rem / 1.414) / 2);
+        width: calc(1.1rem / 1.414);
+        height: calc(1.1rem / 1.414);
+        color: var(--font-color-2);
+        mask: var(--icon) no-repeat;
+        mask-size: 90% 90%;
+        mask-position: 50% 50%;
+        background-color: currentColor;
+    }
+</style>
+
+<style lang="scss" is:global>
+    [data-theme="light"] {
+        .icon-sun {
+            display: block !important;
+        }
+    }
+    [data-theme="dark"] {
+        .icon-moon {
+            display: block !important;
+        }
+    }
+</style>

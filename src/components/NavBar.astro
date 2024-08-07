@@ -1,0 +1,315 @@
+---
+import type { NavConfig } from "@/types/nav";
+import NavHamburger from "./NavHamburger.astro";
+import NavConfigurableItem from "./NavConfigurableItem.astro";
+import NavItem from "./NavItem.astro";
+
+interface Props {
+    info: NavConfig;
+    active?: string;
+    switchTheme?: boolean;
+}
+
+const { info, active, switchTheme = false } = Astro.props;
+---
+
+<nav>
+    <div class="nav-main">
+        <div class="nav-container">
+            <ul class="nav-title">
+                <NavConfigurableItem conf={info} func="title" />
+            </ul>
+            <div style="width: 100%;">
+                <div class="nav-group">
+                    <ul class="nav-content" data-large-win="true">
+                        <NavConfigurableItem conf={info} func="content" activeId={active} />
+                    </ul>
+                    <ul class="nav-icon" data-large-win="true">
+                        <NavConfigurableItem conf={info} func="icon" />
+                        {switchTheme && <NavItem type="theme" />}
+                    </ul>
+                </div>
+                <ul class="nav-icon" data-large-win="false">
+                    <li><NavHamburger /></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="mask" data-large-win="false">
+        <div>
+            <ul class="nav-content">
+                <NavConfigurableItem conf={info} func="content" activeId={active} />
+            </ul>
+            <ul class="nav-icon" data-large-win="false">
+                <NavConfigurableItem conf={info} func="icon" />
+                {switchTheme && <NavItem type="theme" />}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<script>
+    // mouse x, y, change html class from "" to "dark"
+    async function viewTransition(event: MouseEvent) {
+        const isDark = document.documentElement.dataset.theme === "dark";
+        let { clientX: x, clientY: y } = event;
+        const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))}px at ${x}px ${y}px)`
+        ];
+
+        function nextTick(callback: () => void) {
+            return Promise.resolve().then(callback);
+        }
+
+        const startViewTransition =
+            document.startViewTransition ||
+            function (callback: () => void) {
+                callback();
+                return { ready: Promise.resolve() };
+            };
+
+        let vt = startViewTransition(() => {
+            nextTick(() => {
+                document.documentElement.dataset.theme = isDark ? "light" : "dark";
+            });
+        });
+
+        await vt.ready;
+
+        document.documentElement.animate(
+            { clipPath: isDark ? clipPath : clipPath.reverse() },
+            {
+                duration: 300,
+                easing: "ease-in",
+                pseudoElement: `::view-transition-${isDark ? "new" : "old"}(root)`
+            }
+        );
+    }
+    document
+        .querySelectorAll("#toggle-theme")
+        .forEach(e => (e as HTMLElement).addEventListener("click", viewTransition));
+</script>
+
+<style lang="scss" is:global>
+    html::view-transition-old(root),
+    html[data-theme="dark"]::view-transition-new(root) {
+        z-index: 9998;
+    }
+
+    html::view-transition-new(root),
+    html[data-theme="dark"]::view-transition-old(root) {
+        z-index: 9999;
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+        mix-blend-mode: normal;
+    }
+</style>
+
+<style lang="scss" is:global>
+    @import "@/styles/defines.scss";
+    $inner-height: $nav-height - $nav-padding-y * 2;
+    $inner-width: calc(100vw - $nav-padding-x * 2);
+    $hamburger-duration: 0.25s;
+    nav {
+        .nav-main {
+            // background-color: var(--nav-background-color);
+            // linar-gradient transparent
+            background: linear-gradient(to bottom, var(--nav-background-color-top), var(--nav-background-color-bottom));
+            color: var(--font-color);
+            position: fixed;
+            z-index: 99;
+            top: 0;
+            left: 0;
+            width: $inner-width;
+            height: $inner-height;
+            padding: $nav-padding-y $nav-padding-x;
+            border-bottom: $nav-border-width solid;
+            border-bottom-color: transparent; // transition
+            transition: border-color $hamburger-duration;
+
+            .nav-container {
+                display: grid;
+                grid-template-columns: 1.5fr 1fr;
+                margin: 0 auto;
+                width: 100%;
+                line-height: $nav-line-height;
+            }
+
+            .nav-group {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+
+            .nav-title {
+                font-size: 1.15rem;
+                font-weight: bold;
+            }
+            .nav-content,
+            .nav-icon {
+                font-size: 1rem;
+                font-weight: normal;
+            }
+        }
+        .mask {
+            // display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            position: fixed;
+            z-index: 98;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            padding: $nav-height 0 0;
+            background-color: var(--nav-background-color);
+
+            & > div {
+                width: 100%;
+                max-width: 20rem;
+                height: 100%;
+                padding: 1rem $nav-padding-x 0;
+                margin: 0 auto;
+            }
+        }
+        // mask transiton
+        .mask {
+            display: flex;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(-5rem);
+            transition:
+                opacity $hamburger-duration,
+                transform $hamburger-duration;
+        }
+        .nav-main:has(#__check-hamburger:checked) {
+            border-color: var(--nav-hairline-color);
+        }
+        .nav-main:has(#__check-hamburger:checked) ~ .mask {
+            display: flex;
+            pointer-events: auto;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        // nav ul
+        ul {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0;
+            margin: 0;
+            height: $inner-height;
+            &.nav-icon {
+                justify-content: flex-end;
+            }
+        }
+        // nav url (in mask)
+        .mask ul {
+            &.nav-content {
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                width: 100%;
+                padding: 0;
+                height: auto;
+            }
+            &.nav-icon {
+                height: auto;
+                width: 100%;
+                padding: 18px 0 12px;
+                justify-content: center;
+            }
+        }
+        // nav li
+        li {
+            list-style: none;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-items: center;
+            padding: 0;
+            font-size: inherit;
+            font-weight: inherit;
+            text-wrap: nowrap;
+            color: var(--font-color);
+            // not in mask
+            &:not(.mask li) {
+                height: 100%;
+                & > a {
+                    padding: 0 0.5rem;
+                }
+            }
+            & > a {
+                text-decoration: none;
+                color: inherit;
+                cursor: pointer;
+                transition: color 0.2s;
+                &:hover {
+                    color: var(--secondary-color);
+                }
+            }
+            &.active > a {
+                color: var(--primary-color);
+            }
+        }
+        // title li
+        .nav-title li {
+            & > a:hover {
+                color: var(--font-color-2);
+            }
+            &.active > a {
+                color: var(--font-color);
+            }
+        }
+        // nav icon li
+        .nav-icon li {
+            & > a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 1.1rem;
+                & > svg {
+                    height: 100%;
+                }
+            }
+        }
+        // nav li (in mask)
+        .mask li {
+            width: 100%;
+            & > a {
+                width: 100%;
+                padding: 12px 0 11px;
+                border-bottom: 1px solid var(--nav-hairline-color);
+            }
+        }
+        // nav icon li (in mask)
+        .mask .nav-icon li {
+            width: auto;
+            & > a {
+                padding: 0 0.5rem;
+                width: auto;
+                border-bottom: none;
+            }
+        }
+    }
+    @media (max-width: $nav-break-width) {
+        nav {
+            [data-large-win="true"] {
+                display: none !important;
+            }
+        }
+    }
+    @media (min-width: $nav-break-width) {
+        nav {
+            [data-large-win="false"] {
+                display: none !important;
+            }
+        }
+    }
+</style>
