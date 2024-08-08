@@ -1,6 +1,7 @@
 ---
 import NavBarConfig from "@/site-config";
-import NavBar from "@/components/NavBar.astro";
+import NavBarConfigurable from "@/components/NavBarConfigurable.astro";
+import Footer from "@/components/Footer.astro";
 
 interface Props {
     title: string;
@@ -8,6 +9,7 @@ interface Props {
     useBg?: boolean;
     defaultTheme?: "light" | "dark";
     enableThemeSwitch?: boolean;
+    showFooter?: boolean;
     // If true, the slot will be placed below the navbar
     padTopNav?: boolean;
 }
@@ -24,6 +26,7 @@ const {
     useBg = false,
     defaultTheme = "dark",
     enableThemeSwitch = false,
+    showFooter = true,
     padTopNav = true
 } = Astro.props;
 ---
@@ -52,28 +55,41 @@ const {
                 </div>
             )
         }
-        <NavBar info={NavBarConfig.navbar} active={active} switchTheme={enableThemeSwitch} />
+        <NavBarConfigurable config={NavBarConfig.navbar} active={active} switchTheme={enableThemeSwitch} />
         <main class:list={[{ "pad-top-nav": padTopNav }]}><slot /></main>
+        {showFooter && <Footer />}
     </body>
 </html>
 
 <style is:global lang="scss">
     @import "@/styles/colors.scss";
     @import "@/styles/defines.scss";
+    @import "@/styles/scroll.scss";
+    :root {
+        @include scroll(8px);
+    }
     html {
         background-color: var(--background-color);
         color: var(--font-color);
         font-size: $root-font-size;
         font-family:
-            Inter,
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            HarmonyOS Sans SC,
+            PingFang SC,
+            DejaVu Sans,
+            Microsoft YaHei UI,
+            Segoe UI,
+            Roboto,
+            Oxygen,
+            Ubuntu,
+            Cantarell,
+            Fira Sans,
+            Droid Sans,
             Helvetica Neue,
             Helvetica,
-            PingFang SC,
-            Hiragino Sans GB,
-            Microsoft YaHei,
-            "微软雅黑",
             Arial,
-            system-ui,
             sans-serif;
     }
     body {

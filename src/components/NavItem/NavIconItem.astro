@@ -1,64 +1,82 @@
 ---
-import type { NavIconItem, NavIconItems, NavIconStdItem, IconElement, IconId } from "@/types/nav";
-import * as icons from "@/icons";
-import Icon from "@/components/Icon";
+import type { IconId, IconHTML, NavIconItem } from "@/types/nav";
+import { Icon } from "astro-icon/components";
+import Reactify from "@/components/Reactify";
 
 export interface Props {
-    item: NavIconItems;
+    icon: IconId | IconHTML | React.ReactElement; // icon-id or node
+    title?: string;
+    link?: string;
+    target?: "_blank" | "_self" | "_parent" | "_top";
     active?: boolean;
 }
 
-const { item: items, active } = Astro.props;
+const { active, ...props } = Astro.props;
 
-function isIconItemType(item: NavIconItem): item is NavIconStdItem<IconId | IconElement> {
-    return Object.prototype.hasOwnProperty.call(item, "icon");
+interface InferResult {
+    type: "id" | "html" | "node" | "null";
+    data: {
+        id?: string;
+        html?: IconHTML;
+        node?: React.ReactElement;
+        null?: null;
+    };
 }
 
-function stdfyIconItemss(items: NavIconItems): NavIconStdItem[] {
-    if (!Array.isArray(items)) {
-        items = [items];
-    }
-    return items.map(item => {
-        if (typeof item === "string") {
-            // iconId
-            let iconId = /^:(.+):/.exec(item)![1] as keyof typeof icons;
-            let iconItem = { icon: icons[iconId] };
-            if (!iconItem) {
-                throw new Error(`Icon ${iconId} not found`);
-            }
-            return iconItem;
-        } else if (isIconItemType(item)) {
-            // NavIconItem
-            if (typeof item.icon === "string") {
-                let iconId = /^:(.+):/.exec(item.icon)![1] as keyof typeof icons;
-                let iconItem = { icon: icons[iconId] };
-                if (!iconItem) {
-                    throw new Error(`Icon ${iconId} not found`);
-                }
-                return iconItem;
-            } else {
-                return item as NavIconStdItem<IconElement>;
-            }
-        } else {
-            // IconElement
+function inferIcon(icon: IconId | IconHTML | React.ReactElement) {
+    if (typeof icon === "string") {
+        if (icon.startsWith(":")) {
             return {
-                icon: item
+                type: "id",
+                data: {
+                    id: icon.slice(1, -1)
+                }
+            };
+        } else if (icon.startsWith("<") && icon.endsWith(">")) {
+            return {
+                type: "html",
+                data: {
+                    html: icon.slice(1, -1)
+                }
+            };
+        } else {
+            return {
+                type: "null",
+                data: {
+                    null: null
+                }
             };
         }
-    });
+    } else {
+        return {
+            type: "node",
+            data: {
+                node: icon
+            }
+        };
+    }
 }
 
-const stdItems = stdfyIconItemss(items);
+const infer = inferIcon(props.icon);
 ---
 
-{
-    stdItems.map(item => {
-        return (
-            <li class:list={[{ active: active }]}>
-                <a href={item.link} target={item.target} title={item.title || undefined}>
-                    <Icon icon={item.icon} />
-                </a>
-            </li>
-        );
-    })
-}
+<li class:list={[{ active: active }]}>
+    <a href={props.link} target={props.target} title={props.title || undefined}>
+        {
+            infer.type === "id" ? (
+                <Icon name={infer.data[infer.type]!} />
+            ) : infer.type === "html" ? (
+                <Fragment set:html={infer.data[infer.type]!} />
+            ) : infer.type === "node" ? (
+                <Reactify data-icon el={infer.data[infer.type]!} />
+            ) : null
+        }
+    </a>
+</li>
+
+<style lang="scss">
+    [data-icon] {
+        height: 100%;
+        width: max-content;
+    }
+</style>

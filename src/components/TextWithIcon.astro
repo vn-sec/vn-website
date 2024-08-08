@@ -1,0 +1,25 @@
+---
+import { parseMetaFromRaw } from "@/scripts/mixin-meta";
+import { Icon } from "astro-icon/components";
+import PlainTextWithIcon from "@/components/helpers/PlainTextWithIcon.astro";
+import HtmlTextWithIcon from "@/components/helpers/HtmlTextWithIcon.astro";
+
+interface Props {
+    data: string;
+    treat?: "text" | "html";
+}
+
+const { data, treat = "text" } = Astro.props as Props;
+---
+
+{
+    (() => {
+        if (treat === "text") {
+            return <PlainTextWithIcon data={data} />;
+        } else if (treat === "html") {
+            return <HtmlTextWithIcon data={data} />;
+        } else {
+            return null;
+        }
+    })()
+}

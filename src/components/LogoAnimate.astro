@@ -44,9 +44,6 @@ const conf = siteConfig.page["index"];
             min-width: 10rem;
             width: 20rem;
             max-width: 50vw;
-            [data-animate-part-id] {
-                opacity: 0;
-            }
             @keyframes fade-in-a {
                 to {
                     opacity: 1;
@@ -67,16 +64,19 @@ const conf = siteConfig.page["index"];
             }
             // wait gap: 0.15s
             [data-animate-part-id="a"] {
+                opacity: 0;
                 transform: #{part-scale(156.25%, -1)};
-                animation: fade-in-a 0.5s ease-out 0.5s forwards;
+                animation: fade-in-a 0.5s ease-in 0.5s forwards;
             }
             [data-animate-part-id="b"] {
+                opacity: 0;
                 transform: #{part-scale(156.25%, -2)};
-                animation: fade-in-b 0.5s ease-out 1.15s forwards;
+                animation: fade-in-b 0.5s ease-in 1.15s forwards;
             }
             [data-animate-part-id="c"] {
+                opacity: 0;
                 transform: #{part-scale(156.25%, -4)};
-                animation: fade-in-c 0.5s ease-out 1.8s forwards;
+                animation: fade-in-c 0.5s ease-in 1.8s forwards;
             }
         }
     }

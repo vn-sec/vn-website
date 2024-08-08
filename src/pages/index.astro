@@ -1,5 +1,5 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import Layout from "@/layouts/Layout.astro";
 import LogoAnimate from "@/components/LogoAnimate.astro";
 ---
 
@@ -9,12 +9,6 @@ import LogoAnimate from "@/components/LogoAnimate.astro";
             <div class="logo-container">
                 <LogoAnimate />
             </div>
-        </div>
-    </div>
-    <div class="footer">
-        <div class="footer-container">
-            <span>Copyright (c) V&N Team</span>
-            <span><a>Join Us</a></span>
         </div>
     </div>
 </Layout>
@@ -44,28 +38,5 @@ import LogoAnimate from "@/components/LogoAnimate.astro";
         box-sizing: border-box;
         width: max-content;
         margin: 0 auto;
-    }
-    .footer {
-        display: block;
-        position: absolute;
-        top: 100vh;
-        width: 100%;
-        background-color: var(--footer-background-color);
-        .footer-container {
-            margin: 0 auto;
-            padding: 2rem 1rem;
-            box-sizing: border-box;
-            width: max-content;
-            max-width: 100%;
-            text-align: justify;
-            text-align-last: justify;
-            user-select: none;
-            & > span {
-                letter-spacing: normal;
-                user-select: auto;
-                display: inline-block;
-                margin: 0.2rem 0.75rem;
-            }
-        }
     }
 </style>

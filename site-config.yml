@@ -1,9 +1,12 @@
 navbar:
-  title: :vn(title):V&N Team
+  title:
+    text: :vn(title):V&N Team
+    link: /
   content:
     - text: Home
       link: /
-    - Awards
+    - text: Honor
+      link: /honor
     - Members
     - Join Us
   icon:
@@ -13,3 +16,4 @@ page:
   index:
     title: V&N Team
     description: An Union CTF Team From China
+  honor: ./config/honor.md

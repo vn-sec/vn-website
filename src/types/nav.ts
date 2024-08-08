@@ -6,29 +6,27 @@ type ValueOrArray<T> = T | T[];
 export type NavTextStdItem = {
     id?: string;
     text: string;
-    target?: "_blank" | "_self";
     link?: string;
+    target?: "_blank" | "_self";
 }
 
 export type IconId = `:${string}:`;
+export type IconHTML = `<${string}>`;
 
 // :xxx: or :xxx:link or ReactNode
-export type NavIconStdItem<T = IconElement> = {
+export type NavIconStdItem<T = IconId | IconHTML | IconElement> = {
     id?: string;
     icon: T; // html string or node
     title?: string;
-    target?: "_blank" | "_self";
     link?: string;
+    target?: "_blank" | "_self";
 }
 
 export type NavTextItem = string | NavTextStdItem;
-export type NavIconItem = IconId | IconElement | NavIconStdItem<IconId | IconElement>;
-
-export type NavTextItems = ValueOrArray<NavTextItem>
-export type NavIconItems = ValueOrArray<NavIconItem>;
+export type NavIconItem = IconId | IconHTML | IconElement | NavIconStdItem<IconId | IconHTML | IconElement>;
 
 export interface NavConfig {
     title?: ValueOrArray<NavTextItem | NavIconStdItem>
     content?: Array<NavTextItem | NavIconStdItem>;
-    icon?: NavIconItems;
+    icon?: ValueOrArray<NavIconItem>;
 }

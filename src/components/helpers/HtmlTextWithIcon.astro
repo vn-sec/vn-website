@@ -1,0 +1,98 @@
+---
+import { parseMetaFromRaw } from "@/scripts/mixin-meta";
+import PlainTextWithIcon from "@/components/helpers/PlainTextWithIcon.astro";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
+import { JSDOM } from "jsdom";
+
+const { document, Node: DOMNode } = new JSDOM().window;
+
+interface Props {
+    data: string;
+}
+
+type SupportedIconStyle = "fix-w" | "fix-h" | "non-hover";
+
+const { data } = Astro.props as Props;
+
+const metas = parseMetaFromRaw<SupportedIconStyle>(data);
+const container = await AstroContainer.create();
+
+const dataHash = "data-mixinhtml";
+---
+
+{
+    (async () => {
+        // generate html string
+        let html = "";
+        for (const meta of metas) {
+            if (meta.type === "text") {
+                html += meta.literal;
+            } else if (meta.type === "icon") {
+                let _html = await container.renderToString(PlainTextWithIcon, {
+                    props: {
+                        data: ":" + meta.id + ":"
+                    }
+                });
+                // strip DOCTYPE at the beginning
+                const div = document.createElement("div");
+                div.innerHTML = _html;
+                div.children[0].setAttribute(dataHash, "");
+                html += div.innerHTML;
+            }
+        }
+        // wrap text nodes with span
+        const div = document.createElement("div");
+        div.innerHTML = html;
+        function DFSWrapSpan(node: ChildNode, isChild = false) {
+            if (node.nodeName === "SPAN") return;
+            if (node.nodeType === DOMNode.TEXT_NODE && isChild) {
+                if (!node.textContent?.trim()) return;
+                const span = document.createElement("span");
+                span.setAttribute(dataHash, "");
+                span.textContent = node.textContent;
+                node.replaceWith(span);
+            } else {
+                node.childNodes.forEach(n => DFSWrapSpan(n, true));
+            }
+        }
+        DFSWrapSpan(div);
+        html = div.innerHTML;
+
+        return html ? <Fragment set:html={html} /> : null;
+    })()
+}
+
+<style lang="scss" is:global>
+    span[data-mixinhtml] {
+        [data-icon-style] + &,
+        & + [data-icon-style] {
+            margin-left: 0.4em !important;
+        }
+
+        &[data-icon-style] {
+            display: inline-block;
+            user-select: none;
+            & > span {
+                display: inline-flex;
+                vertical-align: middle;
+                box-sizing: border-box;
+                padding-bottom: 0.19rem;
+            }
+        }
+
+        &[data-icon-style~="fix-w"] > span > svg {
+            width: 1em;
+            height: max-content;
+        }
+        &[data-icon-style~="fix-h"] > span > svg {
+            height: 1em;
+            width: max-content;
+        }
+        &[data-icon-style~="non-hover"] {
+            color: var(--font-color);
+            &:hover {
+                color: var(--font-color);
+            }
+        }
+    }
+</style>

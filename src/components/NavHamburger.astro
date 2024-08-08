@@ -1,9 +1,13 @@
 ---
+interface Props {
+    id?: string;
+}
 
+const { id = "__check-hamburger"} = Astro.props;
 ---
 
-<label for="__check-hamburger">
-    <input type="checkbox" id="__check-hamburger" style="display: none;" />
+<label for={id}>
+    <input data-hamburger-checkbox type="checkbox" id={id} style="display: none;" />
     <div class="hamburger">
         <span class="container">
             <span class="top"></span>
@@ -37,7 +41,7 @@
                 background-color 0.5s,
                 transform 0.25s;
             background-color: var(--font-color);
-            #__check-hamburger:checked ~ & {
+            [data-hamburger-checkbox]:checked ~ & {
                 background-color: transparent;
                 background-color: var(--font-color-2);
             }
@@ -68,7 +72,7 @@
                 transform: translate(8px);
             }
         }
-        #__check-hamburger:checked ~ & {
+        [data-hamburger-checkbox]:checked ~ & {
             .top {
                 top: 6px;
                 transform: translate(0) rotate(-135deg);

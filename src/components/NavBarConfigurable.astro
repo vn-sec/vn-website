@@ -1,0 +1,27 @@
+---
+import type { NavConfig } from "@/types/nav";
+import NavItem from "./NavItem.astro";
+import NavBar from "./NavBar.astro";
+import { stdfyConfig } from "@/scripts/nav-config";
+
+interface Props {
+    config: NavConfig;
+    active?: string;
+    switchTheme?: boolean;
+}
+
+const { config, active, switchTheme = false, ...rest } = Astro.props;
+---
+
+<NavBar {...rest}>
+    <Fragment slot="title">
+        {stdfyConfig(config, "title", active).map(item => <NavItem {...item} />)}
+    </Fragment>
+    <Fragment slot="content">
+        {stdfyConfig(config, "content", active).map(item => <NavItem {...item} />)}
+    </Fragment>
+    <Fragment slot="icon">
+        {stdfyConfig(config, "icon", active).map(item => <NavItem {...item} />)}
+        {switchTheme && <NavItem type="theme" />}
+    </Fragment>
+</NavBar>

@@ -1,6 +1,7 @@
 import type { NavConfig } from './types/nav';
 import YAML from 'yaml';
 import fs from 'node:fs';
+import type { HonorInfo } from './scripts/honor-md';
 
 export interface SiteConfig {
     navbar: NavConfig;
@@ -8,7 +9,8 @@ export interface SiteConfig {
         "index": {
             title: string;
             description: string
-        }
+        },
+        "honor": HonorInfo[] | string; // string: Path to markdown file (remote or local)
     }
 }
 

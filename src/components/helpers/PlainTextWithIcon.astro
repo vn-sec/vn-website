@@ -3,21 +3,23 @@ import { parseMetaFromRaw } from "@/scripts/mixin-meta";
 import { Icon } from "astro-icon/components";
 
 interface Props {
-    text: string;
+    data: string;
 }
 
-type SupportedIconStyle = "inline" | "title" | "non-hover";
+type SupportedIconStyle = "fix-w" | "fix-h" | "non-hover";
 
-const metas = parseMetaFromRaw<SupportedIconStyle>(Astro.props.text);
+const { data } = Astro.props as Props;
+
+const metas = parseMetaFromRaw<SupportedIconStyle>(data);
 ---
 
-<!-- <span data-has-icon="true"> -->{
+{
     metas.map(meta => {
         if (meta.type === "text") {
             return <span>{meta.literal}</span>;
         } else if (meta.type === "icon") {
             return (
-                <span data-icon-style={(meta.style ?? ["inline"]).join(" ")}>
+                <span data-icon-style={(meta.style ?? ["fix-h"]).join(" ")}>
                     <span>
                         <Icon name={meta.id} />
                     </span>
@@ -28,20 +30,11 @@ const metas = parseMetaFromRaw<SupportedIconStyle>(Astro.props.text);
         }
     })
 }
-<!-- </span> -->
 
 <style lang="scss">
-    $icon-size-title: 1.7em;
-    $icon-size-inline: 1.1rem;
-
-    [data-icon-style~="inline"] + span,
-    span + [data-icon-style~="inline"] {
-        margin-left: calc($icon-size-inline * 0.4) !important;
-    }
-
-    [data-icon-style~="title"] + span,
-    span + [data-icon-style~="title"] {
-        margin-left: calc($icon-size-title * 0.4) !important;
+    [data-icon-style] + span,
+    span + [data-icon-style] {
+        margin-left: 0.4em !important;
     }
 
     [data-icon-style] {
@@ -55,12 +48,12 @@ const metas = parseMetaFromRaw<SupportedIconStyle>(Astro.props.text);
         }
     }
 
-    [data-icon-style~="inline"] > span > svg {
-        height: $icon-size-inline;
-        width: max-content;
+    [data-icon-style~="fix-w"] > span > svg {
+        width: 1em;
+        height: max-content;
     }
-    [data-icon-style~="title"] > span > svg {
-        height: $icon-size-title;
+    [data-icon-style~="fix-h"] > span > svg {
+        height: 1em;
         width: max-content;
     }
     [data-icon-style~="non-hover"] {

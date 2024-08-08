@@ -1,36 +1,24 @@
 ---
-import type { NavConfig } from "@/types/nav";
 import NavHamburger from "./NavHamburger.astro";
-import NavConfigurableItem from "./NavConfigurableItem.astro";
-import NavItem from "./NavItem.astro";
-
-interface Props {
-    info: NavConfig;
-    active?: string;
-    switchTheme?: boolean;
-}
-
-const { info, active, switchTheme = false } = Astro.props;
 ---
 
-<nav>
+<nav {...Astro.props}>
     <div class="nav-main">
         <div class="nav-container">
             <ul class="nav-title">
-                <NavConfigurableItem conf={info} func="title" />
+                <slot name="title" />
             </ul>
             <div style="width: 100%;">
                 <div class="nav-group">
                     <ul class="nav-content" data-large-win="true">
-                        <NavConfigurableItem conf={info} func="content" activeId={active} />
+                        <slot name="content" />
                     </ul>
                     <ul class="nav-icon" data-large-win="true">
-                        <NavConfigurableItem conf={info} func="icon" />
-                        {switchTheme && <NavItem type="theme" />}
+                        <slot name="icon" />
                     </ul>
                 </div>
                 <ul class="nav-icon" data-large-win="false">
-                    <li><NavHamburger /></li>
+                    <li><NavHamburger id="__check-hamburger" /></li>
                 </ul>
             </div>
         </div>
@@ -38,60 +26,16 @@ const { info, active, switchTheme = false } = Astro.props;
     <div class="mask" data-large-win="false">
         <div>
             <ul class="nav-content">
-                <NavConfigurableItem conf={info} func="content" activeId={active} />
+                <slot name="content" />
             </ul>
             <ul class="nav-icon" data-large-win="false">
-                <NavConfigurableItem conf={info} func="icon" />
-                {switchTheme && <NavItem type="theme" />}
+                <slot name="icon" />
             </ul>
         </div>
     </div>
 </nav>
 
-<script>
-    // mouse x, y, change html class from "" to "dark"
-    async function viewTransition(event: MouseEvent) {
-        const isDark = document.documentElement.dataset.theme === "dark";
-        let { clientX: x, clientY: y } = event;
-        const clipPath = [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))}px at ${x}px ${y}px)`
-        ];
-
-        function nextTick(callback: () => void) {
-            return Promise.resolve().then(callback);
-        }
-
-        const startViewTransition =
-            document.startViewTransition ||
-            function (callback: () => void) {
-                callback();
-                return { ready: Promise.resolve() };
-            };
-
-        let vt = startViewTransition(() => {
-            nextTick(() => {
-                document.documentElement.dataset.theme = isDark ? "light" : "dark";
-            });
-        });
-
-        await vt.ready;
-
-        document.documentElement.animate(
-            { clipPath: isDark ? clipPath : clipPath.reverse() },
-            {
-                duration: 300,
-                easing: "ease-in",
-                pseudoElement: `::view-transition-${isDark ? "new" : "old"}(root)`
-            }
-        );
-    }
-    document
-        .querySelectorAll("#toggle-theme")
-        .forEach(e => (e as HTMLElement).addEventListener("click", viewTransition));
-</script>
-
-<style lang="scss" is:global>
+<style lang="scss">
     html::view-transition-old(root),
     html[data-theme="dark"]::view-transition-new(root) {
         z-index: 9998;
@@ -112,13 +56,14 @@ const { info, active, switchTheme = false } = Astro.props;
 <style lang="scss" is:global>
     @import "@/styles/defines.scss";
     $inner-height: $nav-height - $nav-padding-y * 2;
-    $inner-width: calc(100vw - $nav-padding-x * 2);
+    $inner-width: calc(100% - $nav-padding-x * 2);
     $hamburger-duration: 0.25s;
     nav {
         .nav-main {
             // background-color: var(--nav-background-color);
             // linar-gradient transparent
             background: linear-gradient(to bottom, var(--nav-background-color-top), var(--nav-background-color-bottom));
+            backdrop-filter: blur($nav-blur);
             color: var(--font-color);
             position: fixed;
             z-index: 99;
@@ -164,7 +109,7 @@ const { info, active, switchTheme = false } = Astro.props;
             z-index: 98;
             top: 0;
             left: 0;
-            width: 100vw;
+            width: 100%;
             height: 100vh;
             padding: $nav-height 0 0;
             background-color: var(--nav-background-color);
@@ -177,27 +122,31 @@ const { info, active, switchTheme = false } = Astro.props;
                 margin: 0 auto;
             }
         }
-        // mask transiton
-        .mask {
-            display: flex;
-            pointer-events: none;
-            opacity: 0;
-            transform: translateY(-5rem);
-            transition:
-                opacity $hamburger-duration,
-                transform $hamburger-duration;
-        }
-        .nav-main:has(#__check-hamburger:checked) {
-            border-color: var(--nav-hairline-color);
-        }
-        .nav-main:has(#__check-hamburger:checked) ~ .mask {
-            display: flex;
-            pointer-events: auto;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        // nav ul
-        ul {
+    }
+
+    /** Mask Transition */
+    .mask {
+        display: flex;
+        pointer-events: none;
+        opacity: 0;
+        transform: translateY(-5rem);
+        transition:
+            opacity $hamburger-duration,
+            transform $hamburger-duration;
+    }
+    .nav-main:has(#__check-hamburger:checked) {
+        border-color: var(--nav-hairline-color);
+    }
+    .nav-main:has(#__check-hamburger:checked) ~ .mask {
+        display: flex;
+        pointer-events: auto;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /** ul */
+    ul {
+        nav & {
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -205,99 +154,93 @@ const { info, active, switchTheme = false } = Astro.props;
             padding: 0;
             margin: 0;
             height: $inner-height;
-            &.nav-icon {
-                justify-content: flex-end;
-            }
         }
-        // nav url (in mask)
-        .mask ul {
-            &.nav-content {
-                flex-direction: column;
-                justify-content: flex-start;
-                align-items: flex-start;
-                width: 100%;
-                padding: 0;
-                height: auto;
-            }
-            &.nav-icon {
-                height: auto;
-                width: 100%;
-                padding: 18px 0 12px;
-                justify-content: center;
-            }
+        nav &.nav-icon {
+            justify-content: flex-end;
         }
-        // nav li
-        li {
+        // in mask
+
+        .mask &.nav-content {
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            width: 100%;
+            padding: 0;
+            height: auto;
+        }
+        .mask &.nav-icon {
+            height: auto;
+            width: 100%;
+            padding: 18px 0 12px;
+            justify-content: center;
+        }
+    }
+
+    /** li */
+    li {
+        nav & {
             list-style: none;
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-items: center;
+            height: 100%;
             padding: 0;
             font-size: inherit;
             font-weight: inherit;
             text-wrap: nowrap;
             color: var(--font-color);
-            // not in mask
-            &:not(.mask li) {
-                height: 100%;
-                & > a {
-                    padding: 0 0.5rem;
-                }
-            }
-            & > a {
-                text-decoration: none;
-                color: inherit;
-                cursor: pointer;
-                transition: color 0.2s;
-                &:hover {
-                    color: var(--secondary-color);
-                }
-            }
-            &.active > a {
-                color: var(--primary-color);
-            }
         }
-        // title li
-        .nav-title li {
-            & > a:hover {
-                color: var(--font-color-2);
-            }
-            &.active > a {
-                color: var(--font-color);
-            }
-        }
-        // nav icon li
-        .nav-icon li {
-            & > a {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 1.1rem;
-                & > svg {
-                    height: 100%;
-                }
-            }
-        }
-        // nav li (in mask)
-        .mask li {
+        // in mask
+
+        .mask .nav-content & {
+            height: auto;
             width: 100%;
-            & > a {
-                width: 100%;
-                padding: 12px 0 11px;
-                border-bottom: 1px solid var(--nav-hairline-color);
-            }
         }
-        // nav icon li (in mask)
-        .mask .nav-icon li {
+        .mask .nav-icon & {
             width: auto;
-            & > a {
-                padding: 0 0.5rem;
-                width: auto;
-                border-bottom: none;
-            }
         }
     }
+    /** Styles for tag `a` */
+    a {
+        @mixin a-hover($where, $color-1, $color-2) {
+            #{$where} li > &:hover {
+                color: $color-1;
+            }
+            #{$where} li.active > & {
+                color: $color-2;
+            }
+        }
+        nav li > & {
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 0 0.5rem;
+        }
+        @include a-hover("nav", var(--secondary-color), var(--primary-color));
+        // title a
+        @include a-hover("nav .nav-title", var(--font-color-2), var(--font-color));
+        // icon a
+        nav .nav-icon li > & {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 1.1rem;
+        }
+        nav .mask .nav-content li > & {
+            width: 100%;
+            padding: 12px 0 11px;
+            border-bottom: 1px solid var(--nav-hairline-color);
+        }
+        nav .mask .nav-icon li > & {
+            padding: 0 0.5rem;
+            width: auto;
+            border-bottom: none;
+        }
+    }
+
+    /** Media query */
     @media (max-width: $nav-break-width) {
         nav {
             [data-large-win="true"] {

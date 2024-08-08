@@ -1,5 +1,5 @@
 ---
-console.log(Astro.props)
+
 ---
 
 <li class="nav-item__toggle-theme" id="toggle-theme">
@@ -10,6 +10,48 @@ console.log(Astro.props)
         </span>
     </span>
 </li>
+
+<script>
+    async function viewTransition(event: MouseEvent) {
+        const isDark = document.documentElement.dataset.theme === "dark";
+        let { clientX: x, clientY: y } = event;
+        const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))}px at ${x}px ${y}px)`
+        ];
+
+        function nextTick(callback: () => void) {
+            return Promise.resolve().then(callback);
+        }
+
+        const startViewTransition =
+            document.startViewTransition ||
+            function (callback: () => void) {
+                callback();
+                return { ready: Promise.resolve() };
+            };
+
+        let vt = startViewTransition(() => {
+            nextTick(() => {
+                document.documentElement.dataset.theme = isDark ? "light" : "dark";
+            });
+        });
+
+        await vt.ready;
+
+        document.documentElement.animate(
+            { clipPath: isDark ? clipPath : clipPath.reverse() },
+            {
+                duration: 300,
+                easing: "ease-in",
+                pseudoElement: `::view-transition-${isDark ? "new" : "old"}(root)`
+            }
+        );
+    }
+    document
+        .querySelectorAll("#toggle-theme")
+        .forEach(e => (e as HTMLElement).addEventListener("click", viewTransition));
+</script>
 
 <style lang="scss">
     @import "@/styles/colors.scss";

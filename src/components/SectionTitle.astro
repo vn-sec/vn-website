@@ -1,0 +1,83 @@
+---
+interface Props {
+    text?: string;
+    withIcon?: boolean;
+    anchor?: string;
+    anchorPrefix?: string;
+}
+
+const { text, withIcon = false, anchor, anchorPrefix = "" } = Astro.props;
+
+let _anchor: string;
+if (anchor) _anchor = anchorPrefix + anchor;
+else if (text) _anchor = anchorPrefix + text.toLowerCase().replace(/\s/g, "-");
+else _anchor = "";
+let anchorWithHash = _anchor && "#" + _anchor;
+---
+
+<div class="section-title">
+    <span data-anchor id={_anchor}></span>
+    <a href={anchorWithHash} target="_self">
+        {
+            text ? (
+                <span data-literal set:text={text} data-with-icon={withIcon.toString()} />
+            ) : (
+                <span data-literal data-with-icon={withIcon.toString()}>
+                    <slot />
+                </span>
+            )
+        }
+    </a>
+</div>
+
+<style lang="scss">
+    @import "@/styles/defines.scss";
+    .section-title {
+        $font-size: 1.8rem;
+        font-size: $font-size;
+        font-weight: bold;
+        margin: 2rem 0 1rem;
+        & > a {
+            display: inline-block;
+            cursor: pointer;
+            transition:
+                color 0.25s,
+                transform 0.25s ease-out;
+            color: var(--font-color);
+            transform: translate(0);
+            &:hover {
+                color: var(--font-color-2);
+                transform: translate(-0.25rem, 0);
+            }
+        }
+        // anchor
+        [data-anchor] {
+            display: block;
+            position: absolute;
+            transform: translate(0, calc(-1 * ($nav-height + $nav-border-width)));
+        }
+        [data-literal] {
+            $icon-size: $font-size * 0.5;
+            $border-width: 3px;
+            $icon-width: calc(#{$icon-size * 2} + #{$border-width * 2});
+            display: flex;
+            align-items: center;
+            margin: 0 0 0 calc(-1 * #{$icon-size});
+            &[data-with-icon="true"]::before {
+                content: "";
+                display: block;
+                position: absolute;
+                height: $icon-size;
+                width: $icon-size;
+                transform: translate(calc(-1 * $icon-width), 0);
+                background-color: transparent;
+                border-radius: 50%;
+                border: $border-width solid currentColor;
+                transition: border 0.25s;
+            }
+            &[data-with-icon="true"] {
+                margin: 0 0 0 1rem;
+            }
+        }
+    }
+</style>

@@ -1,0 +1,36 @@
+@mixin scroll($width: 8px) {
+    $scrollbar-width: $width;
+    &::-webkit-scrollbar {
+        width: $scrollbar-width;
+        height: $scrollbar-width;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: transparent;
+        width: $scrollbar-width;
+        height: $scrollbar-width;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #3e3f41;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: #5b5c60;
+        // cursor: grab;
+    }
+
+    &::-webkit-scrollbar-thumb:active {
+        background-color: #5b5c60;
+        // cursor: grabbing;
+    }
+
+    &::-webkit-scrollbar-corner {
+        background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-button {
+        height: 0;
+        width: 0;
+    }
+}

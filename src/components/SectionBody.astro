@@ -1,0 +1,38 @@
+---
+
+---
+
+<div class="section-body">
+    <div data-paragraph>
+        <slot />
+    </div>
+</div>
+
+<style lang="scss">
+    .section-body {
+        $breakpoint: 768px;
+        margin: 1rem 0 1rem;
+        [data-paragraph] {
+            display: block;
+            width: 100%;
+            font-size: 1.05rem;
+            padding: 0.5rem 0;
+            color: var(--font-size);
+        }
+        @media screen and (min-width: $breakpoint) {
+            [data-paragraph] {
+                font-size: 1.1rem;
+            }
+        }
+    }
+</style>
+
+<style lang="scss" is:global>
+    .section-body {
+        [data-paragraph] {
+            p {
+                margin: 0.5rem 0 1rem;
+            }
+        }
+    }
+</style>

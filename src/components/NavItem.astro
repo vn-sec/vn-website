@@ -7,30 +7,34 @@ import NavThemeItem from "./NavItem/NavThemeItem.astro";
 
 interface TextItemProps {
     type: "text";
-    item: NavTextProps["item"];
-    active?: boolean;
+    props: NavTextProps;
 }
 
 interface IconItemProps {
     type: "icon";
-    item: NavIconProps["item"];
-    active?: boolean;
+    props: NavIconProps;
 }
 
 interface ThemeItemProps {
     type: "theme";
 }
 
-export type Props = TextItemProps | IconItemProps | ThemeItemProps;
+export interface PropsSelector {
+    text: TextItemProps;
+    icon: IconItemProps;
+    theme: ThemeItemProps;
+}
+
+export type Props<T extends keyof PropsSelector = keyof PropsSelector> = PropsSelector[T];
 ---
 
 {
     (() => {
         switch (Astro.props.type) {
             case "text":
-                return <NavTextItem item={Astro.props.item} active={Astro.props.active} />;
+                return <NavTextItem {...Astro.props.props} />;
             case "icon":
-                return <NavIconItem item={Astro.props.item} active={Astro.props.active} />;
+                return <NavIconItem {...Astro.props.props} />;
             case "theme":
                 return <NavThemeItem />;
         }
