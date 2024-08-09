@@ -218,7 +218,7 @@ import NavHamburger from "./NavHamburger.astro";
             transition: color 0.2s;
             padding: 0 0.5rem;
         }
-        @include a-hover("nav", var(--secondary-color), var(--primary-color));
+        @include a-hover("nav", var(--secondary-color), var(--secondary-color));
         // title a
         @include a-hover("nav .nav-title", var(--font-color-2), var(--font-color));
         // icon a
@@ -227,6 +227,8 @@ import NavHamburger from "./NavHamburger.astro";
             align-items: center;
             justify-content: center;
             height: 1.1rem;
+            padding: 0;
+            margin: 0 0.5rem;
         }
         nav .mask .nav-content li > & {
             width: 100%;
@@ -234,7 +236,6 @@ import NavHamburger from "./NavHamburger.astro";
             border-bottom: 1px solid var(--nav-hairline-color);
         }
         nav .mask .nav-icon li > & {
-            padding: 0 0.5rem;
             width: auto;
             border-bottom: none;
         }

@@ -2,26 +2,36 @@
 :root,
 [data-theme="light"] {
     --background-color: #ffffff;
-    --nav-background-color: #f6f7f9;
-    --nav-background-color-top: #{rgba(#f6f7f9, 0.75)};
-    --nav-background-color-bottom: #{rgba(#f6f7f9, 0.75)};
-    --footer-background-color: #f6f7f9;
-    --font-color: #17181c;
-    --font-color-2: #353841;
-    --primary-color: #3d50f5;
-    --secondary-color: #7c89f6;
+    --custom-background-mask-opacity: 0.35;
+    --nav-background-color: #f8f8f8;
+    --nav-background-color-top: #{rgba(#f8f8f8, 0.75)};
+    --nav-background-color-bottom: #{rgba(#f8f8f8, 0.75)};
+    --footer-background-color: #f8f8f8;
+    --font-color: #2c2d34;
+    --font-color-2: #000000; // more obvious
+    --font-color-3: #4d4d4d; // less obvious
+    --primary-color: #6877f9;
+    --secondary-color: #3d50f5;
     --nav-hairline-color: #dddee0;
+
+    --card-background-color: #f8f8f8;
+    --card-background-color-alpha: #{rgba(#f8f8f8, 0.7)};
 }
 
 [data-theme="dark"] {
-    --background-color: #17181c;
+    --background-color: #282a36;
+    --custom-background-mask-opacity: 0.35;
     --nav-background-color: #23262f;
     --nav-background-color-top: #{rgba(#23262f, 0.75)};
     --nav-background-color-bottom: #{rgba(#23262f, 0.75)};
     --footer-background-color: #23262f;
-    --font-color: #ffffff;
-    --font-color-2: #c1c3c8;
-    --primary-color: #b3c7ff;
-    --secondary-color: #8290b8;
+    --font-color: #e0e0f1;
+    --font-color-2: #ffffff; // more obvious
+    --font-color-3: #c1c3c8; // less obvious
+    --primary-color: #7b9efc;
+    --secondary-color: #b3c7ff;
     --nav-hairline-color: #373a42;
+
+    --card-background-color: #23262f;
+    --card-background-color-alpha: #{rgba(#23262f, 0.7)};
 }

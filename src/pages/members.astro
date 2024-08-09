@@ -1,0 +1,44 @@
+---
+import Layout from "@/layouts/LayoutPage.astro";
+import PersonInfoCard from "@/components/PersonInfoCard.astro";
+
+import siteConfig, { loadConfigIfUrlString, YAML, type MemberInfo } from "@/site-config";
+
+const conf = siteConfig.page.members || [];
+let memberData = await loadConfigIfUrlString<MemberInfo[]>(conf, f => {
+    return YAML.parse(f);
+});
+---
+
+<Layout title="V&N Team" useBg={true} active="Members" padTopNav={true}>
+    <div class="member-box">
+        {
+            memberData.map(m => (
+                <PersonInfoCard
+                    class="member-card"
+                    avatar={m.avatar}
+                    name={m.name}
+                    tags={typeof m.tags === "undefined" ? m.tags : Array.isArray(m.tags) ? m.tags : [m.tags]}
+                    description={m.description}
+                    link={m.link}
+                    hideLinkTag={false}
+                    hoverable={true}
+                    cardClickable={false}
+                />
+            ))
+        }
+    </div>
+</Layout>
+
+<style lang="scss">
+    .member-box {
+        $col-max-width: 20em;
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(auto-fit, minmax(min($col-max-width, 100%), 1fr));
+        gap: 1.5em 1.75em;
+        .member-card {
+            min-width: fit-content;
+        }
+    }
+</style>

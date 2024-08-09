@@ -1,0 +1,254 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Avatar from "@/components/Avatar.astro";
+import { Icon } from "astro-icon/components";
+import InlineIcon from "@/components/helpers/InlineIcon.astro";
+import FontAwesome, { fas } from "@/components/FontAwesome.astro";
+import { Markdown } from "@/scripts/markdown";
+
+interface Props extends HTMLAttributes<"div"> {
+    avatar?: string;
+    name: string;
+    tags?: string[];
+    link?: string;
+    description?: string;
+    // hide the link tag
+    hideLinkTag?: boolean;
+    // make the card hoverable (scale up on hover)
+    hoverable?: boolean;
+    // make the card clickable (pointer cursor, and open link in new tab)
+    cardClickable?: boolean;
+}
+
+const {
+    avatar,
+    name,
+    tags = [],
+    link,
+    description = "",
+    hideLinkTag = false,
+    hoverable = false,
+    cardClickable = false,
+    ...rest
+} = Astro.props;
+
+const md = Markdown(true);
+const descriptionHtml = md.render(description);
+---
+
+<div
+    class:list={["card", { "card-hoverable": hoverable }, rest.class]}
+    data-card="person-info"
+    data-clickable={cardClickable}
+    data-click-visit={link}
+    {...rest}
+>
+    <div class="card-avatar">
+        {avatar ? <Avatar src={avatar} rounded={true} /> : <Icon name="avatar" data-avatar-img />}
+    </div>
+    <div class="card-info">
+        <div class="card-info--title">
+            <div class="card-info--title__name">
+                <FontAwesome icon={fas.faCircleUser} />
+                <span class="card-info__literal">{name}</span>
+            </div>
+            {
+                (tags.length > 0 || (link && !hideLinkTag)) && (
+                    <>
+                        <> </>
+                        <div class="card-info--title__tag">
+                            {tags &&
+                                tags.map(tag => (
+                                    <>
+                                        <> </>
+                                        <span data-tag-group>
+                                            <InlineIcon icon="tag" />
+                                            <span class="card-info__literal">{tag}</span>
+                                        </span>
+                                    </>
+                                ))}
+                            {link && !hideLinkTag && (
+                                <>
+                                    <> </>
+                                    <span data-tag-link>
+                                        <a href={link} target="_blank">
+                                            <InlineIcon icon="globe" />
+                                        </a>
+                                    </span>
+                                </>
+                            )}
+                        </div>
+                    </>
+                )
+            }
+        </div>
+        <div class="card-info--description">
+            <Fragment set:html={descriptionHtml} />
+        </div>
+    </div>
+</div>
+
+<script>
+    const clickableCards = document.querySelectorAll("[data-clickable][data-click-visit]");
+    clickableCards.forEach(card => {
+        card.addEventListener("click", () => {
+            const link = card.getAttribute("data-click-visit");
+            if (link) window.open(link, "_blank");
+        });
+    });
+</script>
+
+<style lang="scss" is:global>
+    [data-avatar-img] {
+        height: 100%;
+        width: 100%;
+        border-radius: 50%;
+    }
+    .card-wrapper {
+        text-decoration: none;
+        color: unset;
+        &:hover {
+            color: unset;
+            text-decoration: none;
+        }
+    }
+    $card-height: 5.4em;
+    $card-padding-height: 1em;
+    $card-padding-width: 1.2em;
+    $gap-height: 0.8em;
+    $gap-width: 0.8em;
+    $avatar-hw: calc($card-height - 2 * $card-padding-height);
+    $breakpoint-xs: 386px;
+    .card[data-card="person-info"] {
+        display: grid;
+        box-sizing: border-box;
+        gap: $gap-height $gap-width;
+        background-color: var(--card-background-color-alpha);
+        font-size: 1.1rem;
+        padding: $card-padding-height $card-padding-width;
+        // when vw > breakpoint-xs
+        grid-template-areas: "avatar info";
+        grid-template-columns: $avatar-hw auto;
+        min-height: $card-height;
+        // --
+        .card-avatar {
+            display: block;
+            box-sizing: border-box;
+            margin: 0 auto;
+            grid-area: avatar;
+            min-width: $avatar-hw;
+            width: $avatar-hw;
+            height: $avatar-hw;
+        }
+        .card-info {
+            display: block;
+            box-sizing: border-box;
+            grid-area: info;
+            .card-info--title {
+                display: block;
+                box-sizing: border-box;
+                width: 100%;
+                text-align: justify;
+                text-align-last: justify;
+                line-height: 1.5;
+                letter-spacing: 0.75em;
+                user-select: none;
+                .card-info--title__name {
+                    display: inline-block;
+                    width: max-content;
+                    line-height: normal;
+                    letter-spacing: normal;
+                    user-select: text;
+                    color: var(--font-color);
+                    transition: color 0.25s ease;
+                    a {
+                        color: var(--font-color);
+                        transition: color 0.25s ease;
+                        &:hover {
+                            color: var(--secondary-color);
+                        }
+                    }
+                }
+                .card-info--title__tag {
+                    display: inline-block;
+                    width: max-content;
+                    line-height: normal;
+                    letter-spacing: 0.5em;
+                    user-select: none;
+                    color: var(--font-color-3);
+                    transition: color 0.25s ease;
+                    a {
+                        color: var(--font-color-3);
+                        transition: color 0.25s ease;
+                        &:hover {
+                            color: var(--primary-color);
+                        }
+                    }
+                    [data-tag-group],
+                    [data-tag-link] {
+                        display: inline-block;
+                        letter-spacing: normal;
+                        user-select: text;
+                    }
+                }
+                .card-info__literal {
+                    margin-left: 0.125em;
+                }
+            }
+            .card-info--description {
+                display: block;
+                box-sizing: border-box;
+                text-wrap: normal;
+                word-wrap: break-word;
+                color: var(--font-color-3);
+                transition: color 0.25s ease;
+                margin-top: 0.5em;
+                p {
+                    margin: 0.5em 0 0 0;
+                }
+            }
+        }
+        // when vw < breakpoint-xs
+        @media (max-width: $breakpoint-xs) {
+            grid-template-areas: "avatar" "info";
+            grid-template-columns: auto;
+            grid-template-rows: $avatar-hw auto;
+            min-height: auto;
+            .card-info {
+                .card-info--title {
+                    .card-info--title__name {
+                        display: block;
+                        margin: 0 auto;
+                    }
+                    .card-info--title__tag {
+                        display: block;
+                        margin: 0 auto;
+                        margin-top: 0.25em;
+                    }
+                }
+                .card-info--description {
+                    margin: 0 auto;
+                    margin-top: 0.5em;
+                    width: fit-content;
+                }
+            }
+        }
+    }
+    .card[data-card="person-info"].card-hoverable {
+        transform: scale(1);
+        transition: transform 0.25s ease;
+        &:hover {
+            transform: scale(1.01);
+        }
+        &:hover .card-info--title__name,
+        .card-info--title__name:hover {
+            color: var(--font-color-2);
+            a {
+                color: var(--font-color-2);
+            }
+        }
+    }
+    .card[data-clickable] {
+        cursor: pointer;
+    }
+</style>

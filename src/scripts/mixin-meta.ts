@@ -10,6 +10,7 @@ type TextMeta = {
 };
 type IconMeta<T = string> = {
     type: "icon";
+    literal: string;
     id: string;
     varName: string;
     element: IconElement;
@@ -50,7 +51,7 @@ export function parseMetaFromRaw<T = string>(raw: string, fromJSX: boolean = fal
             let sub = raw.substring(lastPos, i);
             let match = /([^()]+)\s*(\((.+)\))?/.exec(sub);
             let iconId = match ? match[1] : sub;
-            let varName = fromIconId(iconId);
+            let iconVar = fromIconId(iconId);
             let iconStyle = match ? match[3] : undefined;
             let iconStyles = iconStyle ? (iconStyle.split(/\s+/) as NonNullable<IconMeta<T>["style"]>) : [];
             let iconElement: IconElement | undefined;
@@ -69,8 +70,9 @@ export function parseMetaFromRaw<T = string>(raw: string, fromJSX: boolean = fal
             } else {
                 push({
                     type: "icon",
+                    literal: sub,
                     id: iconId,
-                    varName: varName,
+                    varName: iconVar,
                     element: iconElement,
                     style: iconStyles
                 });

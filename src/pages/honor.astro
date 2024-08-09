@@ -1,62 +1,37 @@
 ---
-import Layout from "@/layouts/Layout.astro";
+import Layout from "@/layouts/LayoutPage.astro";
 import Section from "@/components/Section.astro";
 import SectionTitle from "@/components/SectionTitle.astro";
 import SectionBody from "@/components/SectionBody.astro";
 import TextWithIcon from "@/components/TextWithIcon.astro";
 import { Extractor } from "@/scripts/honor-md";
 import type { HonorInfo } from "@/scripts/honor-md";
-import fs from "node:fs";
+import siteConfig, { loadConfigIfUrlString } from "@/site-config";
 
-import siteConfig from "@/site-config";
-
-const conf = siteConfig.page.honor;
-let sectionData: HonorInfo[];
-if (typeof conf === "string") {
-    // url or path
-    let file_content: string;
-    if (/^https?\/\/.+/.test(conf)) {
-        file_content = await fetch(conf).then(res => res.text());
-    } else {
-        file_content = fs.readFileSync(conf, "utf-8");
-    }
+const conf = siteConfig.page.honor || [];
+let sectionData = await loadConfigIfUrlString<HonorInfo[]>(conf, f => {
     const extractor = new Extractor();
-    sectionData = extractor.parse(file_content);
-} else {
-    sectionData = conf;
-}
+    return extractor.parse(f);
+});
 ---
 
 <Layout title="V&N Team" useBg={true} active="Honor" padTopNav={true}>
-    <div class="window">
-        <Section data-honor-section>
-            {
-                sectionData.map(info => (
-                    <>
-                        <SectionTitle anchorPrefix="y" text={info.title} withIcon={true} />
-                        <SectionBody>
-                            <TextWithIcon data={info.content} treat="html" />
-                        </SectionBody>
-                    </>
-                ))
-            }
-        </Section>
-    </div>
+    <Section data-section="honor">
+        {
+            sectionData.map(info => (
+                <>
+                    <SectionTitle anchorPrefix="y" text={info.title} withIcon={true} />
+                    <SectionBody>
+                        <TextWithIcon data={info.content} treat="html" />
+                    </SectionBody>
+                </>
+            ))
+        }
+    </Section>
 </Layout>
 
-<style lang="scss">
-    @import "@/styles/defines.scss";
-    .window {
-        display: block;
-        width: 80%;
-        margin: 0 auto;
-        box-sizing: border-box;
-        padding: 5rem 0 2rem;
-    }
-</style>
-
 <style lang="scss" is:global>
-    [data-honor-section] a {
+    [data-section="honor"] a {
         color: var(--font-color);
         &:hover {
             color: var(--font-color-2);

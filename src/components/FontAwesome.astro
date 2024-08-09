@@ -1,0 +1,12 @@
+---
+import InlineIcon from "@/components/helpers/InlineIcon.astro";
+import FontAwesomeIcon from "@/components/FontAwesome";
+
+type Props = Parameters<typeof FontAwesomeIcon>[0];
+
+export * from "@/components/FontAwesome";
+---
+
+<InlineIcon>
+    <FontAwesomeIcon {...Astro.props} />
+</InlineIcon>

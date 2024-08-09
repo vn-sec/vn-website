@@ -39,7 +39,7 @@ const conf = siteConfig.page["index"];
             transform: #{svg-scale(64%)};
         }
         svg {
-            $fill-color: var(--font-color);
+            $fill-color: var(--font-color-2);
             fill: $fill-color;
             min-width: 10rem;
             width: 20rem;
@@ -99,9 +99,9 @@ const conf = siteConfig.page["index"];
         margin: 0 auto;
         text-align: center;
         font-size: 1.8rem;
+        color: var(--font-color-2);
         font-weight: bold;
         padding: 0.5rem 0;
-        color: var(--font-size);
     }
     [data-contain="description"] {
         display: block;
@@ -109,8 +109,8 @@ const conf = siteConfig.page["index"];
         margin: 0 auto;
         text-align: center;
         font-size: 1.2rem;
+        color: var(--font-color-2);
         padding: 0.5em 0;
-        color: var(--font-size);
         max-width: 60vw;
         text-wrap: wrap;
         word-wrap: break-word;

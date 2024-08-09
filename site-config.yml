@@ -7,13 +7,16 @@ navbar:
       link: /
     - text: Honor
       link: /honor
-    - Members
+    - text: Members
+      link: /members
     - Join Us
   icon:
-    - ':github:'
+    - icon: ':github:'
+      link: https://github.com/Cnily03/vn-website
 
 page:
   index:
     title: V&N Team
     description: An Union CTF Team From China
   honor: ./config/honor.md
+  members: ./config/members.yml

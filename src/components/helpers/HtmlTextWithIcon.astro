@@ -30,7 +30,7 @@ const dataHash = "data-mixinhtml";
             } else if (meta.type === "icon") {
                 let _html = await container.renderToString(PlainTextWithIcon, {
                     props: {
-                        data: ":" + meta.id + ":"
+                        data: ":" + meta.literal + ":"
                     }
                 });
                 // strip DOCTYPE at the beginning
@@ -75,8 +75,8 @@ const dataHash = "data-mixinhtml";
             & > span {
                 display: inline-flex;
                 vertical-align: middle;
-                box-sizing: border-box;
                 padding-bottom: 0.19rem;
+                box-sizing: border-box;
             }
         }
 

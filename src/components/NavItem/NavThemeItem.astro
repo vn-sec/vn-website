@@ -12,7 +12,7 @@
 </li>
 
 <script>
-    async function viewTransition(event: MouseEvent) {
+    async function handleViewTransition(event: MouseEvent) {
         const isDark = document.documentElement.dataset.theme === "dark";
         let { clientX: x, clientY: y } = event;
         const clipPath = [
@@ -50,7 +50,7 @@
     }
     document
         .querySelectorAll("#toggle-theme")
-        .forEach(e => (e as HTMLElement).addEventListener("click", viewTransition));
+        .forEach(e => (e as HTMLElement).addEventListener("click", handleViewTransition));
 </script>
 
 <style lang="scss">

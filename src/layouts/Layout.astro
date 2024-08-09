@@ -4,7 +4,7 @@ import NavBarConfig from "@/site-config";
 import NavBarConfigurable from "@/components/NavBarConfigurable.astro";
 import Footer from "@/components/Footer.astro";
 
-interface Props {
+export interface Props {
     title: string;
     active?: string;
     useBg?: boolean;
@@ -14,12 +14,6 @@ interface Props {
     // If true, the slot will be placed below the navbar
     padTopNav?: boolean;
 }
-
-// const info = {
-//     title: ["Home"],
-//     content: ["About", "Blog", "Projects"],
-//     icon: [icons.NodeList.github]
-// };
 
 const {
     title,
@@ -63,6 +57,9 @@ const {
     :root {
         @include scroll(8px);
     }
+    ::selection {
+        background-color: rgba(61, 170, 194, 0.25);
+    }
     html {
         background-color: var(--background-color);
         color: var(--font-color);
@@ -96,7 +93,6 @@ const {
         }
         & > main.pad-top-nav {
             padding-top: calc($nav-height + $nav-border-width);
-            min-height: calc(100vh - $nav-height - $nav-border-width);
         }
     }
     code {
@@ -120,7 +116,7 @@ const {
         color: var(--primary-color);
         text-decoration: none;
         cursor: pointer;
-        transition: color 0.25s;
+        transition: color 0.25s ease;
         &:hover {
             color: var(--secondary-color);
         }
@@ -153,7 +149,7 @@ const {
             right: 0;
             bottom: 0;
             background: var(--background-color);
-            opacity: 0.25;
+            opacity: var(--custom-background-mask-opacity);
             // pointer-events: none;
         }
     }

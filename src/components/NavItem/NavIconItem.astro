@@ -11,7 +11,7 @@ export interface Props {
     active?: boolean;
 }
 
-const { active, ...props } = Astro.props;
+const { active, target = "_blank", ...props } = Astro.props;
 
 interface InferResult {
     type: "id" | "html" | "node" | "null";
@@ -23,7 +23,7 @@ interface InferResult {
     };
 }
 
-function inferIcon(icon: IconId | IconHTML | React.ReactElement) {
+function inferIcon(icon: IconId | IconHTML | React.ReactElement): InferResult {
     if (typeof icon === "string") {
         if (icon.startsWith(":")) {
             return {
@@ -36,7 +36,7 @@ function inferIcon(icon: IconId | IconHTML | React.ReactElement) {
             return {
                 type: "html",
                 data: {
-                    html: icon.slice(1, -1)
+                    html: icon.slice(1, -1) as IconHTML
                 }
             };
         } else {
@@ -61,7 +61,7 @@ const infer = inferIcon(props.icon);
 ---
 
 <li class:list={[{ active: active }]}>
-    <a href={props.link} target={props.target} title={props.title || undefined}>
+    <a href={props.link || undefined} target={props.link ? target : undefined} title={props.title || undefined}>
         {
             infer.type === "id" ? (
                 <Icon name={infer.data[infer.type]!} />

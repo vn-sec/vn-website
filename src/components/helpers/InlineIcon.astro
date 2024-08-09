@@ -1,0 +1,26 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+    icon?: string;
+}
+
+const { icon } = Astro.props as Props;
+---
+
+<i class="svg--inline">
+    {icon ? <Icon name={icon} /> : <slot />}
+</i>
+
+<style lang="scss" is:global>
+    .svg--inline {
+        overflow: visible;
+        box-sizing: content-box;
+        display: inline-block;
+        vertical-align: -0.125em;
+        & > svg {
+            height: 1em;
+            width: max-content;
+        }
+    }
+</style>
