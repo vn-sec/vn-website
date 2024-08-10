@@ -1,38 +1,44 @@
 ---
 import Layout from "@/layouts/LayoutPage.astro";
+import Page from "@/components/Page.astro";
 import PersonInfoCard from "@/components/PersonInfoCard.astro";
 
-import siteConfig, { loadConfigIfUrlString, YAML, type MemberInfo } from "@/site-config";
+import siteConfig, { loadConfigIfUrlString } from "@/site-config";
 
-const conf = siteConfig.page.members || [];
-let memberData = await loadConfigIfUrlString<MemberInfo[]>(conf, f => {
-    return YAML.parse(f);
+const _conf = siteConfig.page.members ?? [];
+const conf = Array.isArray(_conf) ? { content: _conf } : _conf;
+const pageconf = await loadConfigIfUrlString<typeof conf>(conf, (f, { YAML }) => {
+    let c = YAML.parse(f);
+    return Array.isArray(c) ? { content: c } : c;
 });
 ---
 
-<Layout title="V&N Team" useBg={true} active="Members" padTopNav={true}>
-    <div class="member-box">
-        {
-            memberData.map(m => (
-                <PersonInfoCard
-                    class="member-card"
-                    avatar={m.avatar}
-                    name={m.name}
-                    tags={typeof m.tags === "undefined" ? m.tags : Array.isArray(m.tags) ? m.tags : [m.tags]}
-                    description={m.description}
-                    link={m.link}
-                    hideLinkTag={false}
-                    hoverable={true}
-                    cardClickable={false}
-                />
-            ))
-        }
-    </div>
+<Layout title="V&N Team" useBg={true} autoHideNav={true} active="members" padTopNav={true}>
+    <Page title={pageconf.title} subtitle={pageconf.subtitle} anchor={true} mdOptions={{ externalLink: true }}>
+        <div class="member-box">
+            {
+                pageconf.content.map(m => (
+                    <PersonInfoCard
+                        class="member-card"
+                        avatar={m.avatar}
+                        name={m.name}
+                        tags={typeof m.tags === "undefined" ? m.tags : Array.isArray(m.tags) ? m.tags : [m.tags]}
+                        description={m.description}
+                        link={m.link}
+                        hideLinkTag={false}
+                        hoverable={true}
+                        cardClickable={false}
+                    />
+                ))
+            }
+        </div>
+    </Page>
 </Layout>
 
 <style lang="scss">
     .member-box {
         $col-max-width: 20em;
+        margin: 2.5em 0;
         display: grid;
         width: 100%;
         grid-template-columns: repeat(auto-fit, minmax(min($col-max-width, 100%), 1fr));

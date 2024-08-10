@@ -1,13 +1,16 @@
 ---
+import type { HTMLAttributes } from "astro/types";
 
+interface Props extends HTMLAttributes<"section"> {}
 ---
 
-<section>
+<section {...Astro.props}>
     <slot />
 </section>
 
 <style lang="scss">
     section {
-        padding: 0 1.5rem;
+        margin: 1.5rem 0;
+        padding: 0 0.7em;
     }
 </style>

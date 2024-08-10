@@ -1,0 +1,18 @@
+---
+interface Props {
+    id: string;
+}
+
+const { id } = Astro.props;
+---
+
+<span data-anchor="pad-nav-top" id={id}></span>
+
+<style lang="scss">
+    @import "@/styles/defines.scss";
+    [data-anchor="pad-nav-top"] {
+        display: block;
+        position: absolute;
+        transform: translate(0, calc(-1 * ($nav-height + $nav-border-width)));
+    }
+</style>

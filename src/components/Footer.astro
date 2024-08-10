@@ -1,11 +1,19 @@
 ---
+import FooterElement from "./helpers/FooterElement.astro";
+import type { MarkdownOptions } from "@/scripts/markdown";
 
+import siteConfig from "@/site-config";
+
+const MdOpts: Partial<MarkdownOptions> = {
+    externalLink: true
+};
+
+const conf = siteConfig.footer;
 ---
 
 <div class="footer">
     <div class="footer-container">
-        <span>Copyright (c) V&N Team</span>
-        <span><a>Join Us</a></span>
+        <FooterElement md={conf.copyright} options={MdOpts} />
     </div>
 </div>
 
@@ -25,12 +33,6 @@
             text-align: justify;
             text-align-last: justify;
             user-select: none;
-            & > span {
-                letter-spacing: normal;
-                user-select: auto;
-                display: inline-block;
-                margin: 0.2rem 0.75rem;
-            }
         }
     }
 </style>

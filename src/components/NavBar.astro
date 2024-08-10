@@ -1,8 +1,15 @@
 ---
+import type { HTMLAttributes } from "astro/types";
 import NavHamburger from "./NavHamburger.astro";
+
+export interface Props extends HTMLAttributes<"nav"> {
+    autoHide?: boolean;
+}
+
+const { autoHide = false, ...rest } = Astro.props;
 ---
 
-<nav {...Astro.props}>
+<nav {...rest} class:list={[autoHide ? "nav-autohide" : undefined, rest.class, rest["class:list"]]}>
     <div class="nav-main">
         <div class="nav-container">
             <ul class="nav-title">
@@ -35,23 +42,52 @@ import NavHamburger from "./NavHamburger.astro";
     </div>
 </nav>
 
-<style lang="scss">
-    html::view-transition-old(root),
-    html[data-theme="dark"]::view-transition-new(root) {
-        z-index: 9998;
+<script>
+    const navMainEl = document.querySelector("nav.nav-autohide .nav-main");
+    if (navMainEl instanceof HTMLElement) {
+        const el = navMainEl! as HTMLElement;
+        function hide() {
+            const checkbox = el.querySelector("#__check-hamburger") as HTMLInputElement | null;
+            if (checkbox?.checked) return;
+            const navHeight = el.clientHeight;
+            el.style.setProperty("--nav-dy", `-${navHeight}px`);
+        }
+        function show() {
+            el.style.setProperty("--nav-dy", `0px`);
+        }
+        function getWindowMaxScrollY() {
+            let scrollHeight = document.documentElement.scrollHeight;
+            let maxScrollY = scrollHeight - window.innerHeight;
+            return maxScrollY;
+        }
+        document.addEventListener("wheel", e => {
+            if (e.deltaY > 0) {
+                // scroll down, hide
+                if (Math.ceil(window.scrollY) >= getWindowMaxScrollY()) return;
+                hide();
+            } else if (e.deltaY < 0) {
+                // scroll up, show
+                show();
+            }
+        });
+        document.addEventListener("touchstart", e => {
+            startClientY = e.touches[0].clientY;
+        });
+        let scrollDeltaY = 0;
+        let startClientY = 0;
+        document.addEventListener("touchmove", e => {
+            scrollDeltaY = -(e.touches[0].clientY - startClientY);
+            if (scrollDeltaY > el.clientHeight) {
+                // scroll down, hide
+                if (Math.ceil(window.scrollY) >= getWindowMaxScrollY()) return;
+                hide();
+            } else if (scrollDeltaY < -el.clientHeight) {
+                // scroll up, show
+                show();
+            }
+        });
     }
-
-    html::view-transition-new(root),
-    html[data-theme="dark"]::view-transition-old(root) {
-        z-index: 9999;
-    }
-
-    ::view-transition-old(root),
-    ::view-transition-new(root) {
-        animation: none;
-        mix-blend-mode: normal;
-    }
-</style>
+</script>
 
 <style lang="scss" is:global>
     @import "@/styles/defines.scss";
@@ -59,6 +95,11 @@ import NavHamburger from "./NavHamburger.astro";
     $inner-width: calc(100% - $nav-padding-x * 2);
     $hamburger-duration: 0.25s;
     nav {
+        &.nav-autohide .nav-main {
+            --nav-dy: 0px;
+            $nav-actual-height: calc($nav-height + $nav-border-width);
+            top: min(max(calc(-1 * $nav-actual-height), var(--nav-dy)), 0px) !important;
+        }
         .nav-main {
             // background-color: var(--nav-background-color);
             // linar-gradient transparent
@@ -74,7 +115,13 @@ import NavHamburger from "./NavHamburger.astro";
             padding: $nav-padding-y $nav-padding-x;
             border-bottom: $nav-border-width solid;
             border-bottom-color: transparent; // transition
-            transition: border-color $hamburger-duration;
+            transition:
+                top 0.3s ease-out,
+                border-color $hamburger-duration ease,
+                box-shadow 0.3s ease;
+            &:hover {
+                box-shadow: 0 0 1rem 0 var(--nav-background-color-bottom);
+            }
 
             .nav-container {
                 display: grid;

@@ -5,8 +5,10 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
+    "check": "astro check",
     "build": "astro build",
     "build:check": "astro check && astro build",
+    "clean": "rm -rf dist .astro",
     "preview": "astro preview",
     "astro": "astro"
   },

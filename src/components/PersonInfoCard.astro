@@ -4,19 +4,28 @@ import Avatar from "@/components/Avatar.astro";
 import { Icon } from "astro-icon/components";
 import InlineIcon from "@/components/helpers/InlineIcon.astro";
 import FontAwesome, { fas } from "@/components/FontAwesome.astro";
-import { Markdown } from "@/scripts/markdown";
+import Markdown from "@/scripts/markdown";
 
 interface Props extends HTMLAttributes<"div"> {
     avatar?: string;
     name: string;
     tags?: string[];
     link?: string;
-    description?: string;
-    // hide the link tag
+    /**
+     * Markdown content
+     */
+    description?: markdown;
+    /**
+     * Hide the link tag
+     */
     hideLinkTag?: boolean;
-    // make the card hoverable (scale up on hover)
+    /**
+     * Make the card hoverable (scale up on hover)
+     */
     hoverable?: boolean;
-    // make the card clickable (pointer cursor, and open link in new tab)
+    /**
+     * Make the card clickable (pointer cursor, and open link in new tab)
+     */
     cardClickable?: boolean;
 }
 
@@ -32,12 +41,12 @@ const {
     ...rest
 } = Astro.props;
 
-const md = Markdown(true);
+const md = new Markdown({ externalLink: true });
 const descriptionHtml = md.render(description);
 ---
 
 <div
-    class:list={["card", { "card-hoverable": hoverable }, rest.class]}
+    class:list={["card", { "card-hoverable": hoverable }, rest.class, rest["class:list"]]}
     data-card="person-info"
     data-clickable={cardClickable}
     data-click-visit={link}

@@ -1,12 +1,15 @@
 ---
-interface Props {
+import type { HTMLAttributes } from "astro/types";
+import Anchor from "@/components/helpers/AnchorPadNavTop.astro";
+
+interface Props extends HTMLAttributes<"div"> {
     text?: string;
     withIcon?: boolean;
     anchor?: string;
     anchorPrefix?: string;
 }
 
-const { text, withIcon = false, anchor, anchorPrefix = "" } = Astro.props;
+const { text, withIcon = false, anchor, anchorPrefix = "", ...rest } = Astro.props;
 
 let _anchor: string;
 if (anchor) _anchor = anchorPrefix + anchor;
@@ -15,8 +18,8 @@ else _anchor = "";
 let anchorWithHash = _anchor && "#" + _anchor;
 ---
 
-<div class="section-title">
-    <span data-anchor id={_anchor}></span>
+<div {...rest} class:list={["section-title", rest.class, rest["class:list"]]}>
+    <Anchor id={_anchor} />
     <a href={anchorWithHash} target="_self">
         {
             text ? (
@@ -33,7 +36,7 @@ let anchorWithHash = _anchor && "#" + _anchor;
 <style lang="scss">
     @import "@/styles/defines.scss";
     .section-title {
-        $font-size: 1.8em;
+        $font-size: 1.6em;
         font-size: $font-size;
         font-weight: bold;
         margin: 2rem 0 1rem;
@@ -49,12 +52,6 @@ let anchorWithHash = _anchor && "#" + _anchor;
                 color: var(--font-color-2);
                 transform: translate(-0.25rem, 0);
             }
-        }
-        // anchor
-        [data-anchor] {
-            display: block;
-            position: absolute;
-            transform: translate(0, calc(-1 * ($nav-height + $nav-border-width)));
         }
         [data-literal] {
             $icon-size: $font-size * 0.25;

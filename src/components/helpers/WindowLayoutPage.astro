@@ -1,0 +1,29 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends HTMLAttributes<"div"> {}
+---
+
+<div {...Astro.props} class:list={["window", Astro.props.class, Astro.props["class:list"]]}><slot /></div>
+
+<style lang="scss">
+    $breakpoint-l: 768px;
+    $breakpoint-m: 576px;
+    .window {
+        display: block;
+        width: 75%;
+        margin: 0 auto;
+        box-sizing: border-box;
+        padding: 4rem 0 2.5rem;
+        font-size: 1.05rem;
+        @media (max-width: $breakpoint-l) {
+            width: 85%;
+            font-size: 1rem;
+        }
+        @media (max-width: $breakpoint-m) {
+            $margin-width: 1.5em;
+            margin: 0 $margin-width;
+            width: calc(100% - #{$margin-width * 2});
+        }
+    }
+</style>

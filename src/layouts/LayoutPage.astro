@@ -1,6 +1,6 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import type { Props as LayoutProps } from "@/layouts/Layout.astro";
+import Layout, { type Props as LayoutProps } from "@/layouts/Layout.astro";
+import Window from "@/components/helpers/WindowLayoutPage.astro";
 
 export interface Props extends LayoutProps {}
 
@@ -8,27 +8,5 @@ const { ...layoutProps } = Astro.props;
 ---
 
 <Layout {...layoutProps}>
-    <div class="window"><slot /></div>
+    <Window><slot /></Window>
 </Layout>
-
-<style lang="scss">
-    $breakpoint-l: 768px;
-    $breakpoint-m: 576px;
-    .window {
-        display: block;
-        width: 80%;
-        margin: 0 auto;
-        box-sizing: border-box;
-        padding: 5rem 0 2rem;
-        font-size: 1.05rem;
-        @media (max-width: $breakpoint-l) {
-            width: 85%;
-            font-size: 1rem;
-        }
-        @media (max-width: $breakpoint-m) {
-            $margin-width: 1.5rem;
-            margin: 0 $margin-width;
-            width: calc(100% - #{$margin-width * 2});
-        }
-    }
-</style>

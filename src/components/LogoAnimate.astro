@@ -1,7 +1,12 @@
 ---
-import siteConfig from "@/site-config";
+import type { HTMLAttributes } from "astro/types";
 
-const conf = siteConfig.page["index"];
+interface Props extends HTMLAttributes<"div"> {
+    title: string;
+    description: string;
+}
+
+const { title, description } = Astro.props;
 ---
 
 <div>
@@ -18,8 +23,8 @@ const conf = siteConfig.page["index"];
             </g>
         </svg>
     </div>
-    <div data-animate-part-id="d" data-contain="title" set:text={conf.title} />
-    <div data-animate-part-id="e" data-contain="description" set:text={conf.description} />
+    <div data-animate-part-id="d" data-contain="title" set:text={title} />
+    <div data-animate-part-id="e" data-contain="description" set:text={description} />
 </div>
 
 <style lang="scss">

@@ -1,8 +1,6 @@
 import type { IconElement } from "@/icons";
 export type { IconElement } from "@/icons";
 
-type ValueOrArray<T> = T | T[];
-
 export type NavTextStdItem = {
     id?: string;
     text: string;
@@ -24,9 +22,3 @@ export type NavIconStdItem<T = IconId | IconHTML | IconElement> = {
 
 export type NavTextItem = string | NavTextStdItem;
 export type NavIconItem = IconId | IconHTML | IconElement | NavIconStdItem<IconId | IconHTML | IconElement>;
-
-export interface NavConfig {
-    title?: ValueOrArray<NavTextItem | NavIconStdItem>
-    content?: Array<NavTextItem | NavIconStdItem>;
-    icon?: ValueOrArray<NavIconItem>;
-}

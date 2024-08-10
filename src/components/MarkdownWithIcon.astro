@@ -1,0 +1,19 @@
+---
+import TextWithIcon from "@/components/TextWithIcon.astro";
+import { Markdown, type MarkdownOptions } from "@/scripts/markdown";
+
+export interface Props {
+    md: markdown;
+    options?: Partial<MarkdownOptions>;
+}
+
+const { md, options } = Astro.props;
+
+const d_opts: Partial<MarkdownOptions> = {
+    // externalLink: true
+};
+
+let html = new Markdown(Object.assign({}, d_opts, options)).render(md);
+---
+
+<TextWithIcon data={html} treat="html" />

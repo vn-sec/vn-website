@@ -1,8 +1,11 @@
 import type * as NavTypes from "@/types/nav";
-import type { ValueOf } from "node_modules/astro/dist/type-utils";
+import type { NavConfig } from "@/types/site-config";
 import type { Props as NavItemProps } from "@/components/NavItem.astro";
 
-function assertType<T>(t: any, expression: any): t is T {
+function assertType<T>(t: any, expression: any | ((e: typeof t) => any)): t is T {
+    if (typeof expression === "function") {
+        return Boolean(expression(t));
+    }
     return Boolean(expression);
 }
 
@@ -17,8 +20,8 @@ function isActive(active?: string, text?: string, id?: string) {
 }
 
 export function stdfyConfig(
-    navconf: NavTypes.NavConfig,
-    type: keyof NavTypes.NavConfig,
+    navconf: NavConfig,
+    type: keyof NavConfig,
     active?: string
 ): NavItemProps[] {
     if (!navconf[type]) return [];

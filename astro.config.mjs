@@ -25,8 +25,9 @@ export default defineConfig({
     integrations: [icon(), react(), {
         name: "watch-config",
         hooks: {
-            async "astro:config:setup"({ config, logger, addWatchFile }) {
+            async "astro:config:setup"({ config, addWatchFile }) {
                 addWatchFile(new URL("./site-config.yml", config.root));
+                addWatchFile(new URL("./site-config.yaml", config.root));
                 addWatchDir("./config", { addWatchFile, config });
             }
         }

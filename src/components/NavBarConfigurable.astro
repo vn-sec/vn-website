@@ -1,10 +1,10 @@
 ---
-import type { NavConfig } from "@/types/nav";
+import type { NavConfig } from "@/types/site-config";
 import NavItem from "./NavItem.astro";
-import NavBar from "./NavBar.astro";
+import NavBar, { type Props as NavBarProps } from "./NavBar.astro";
 import { stdfyConfig } from "@/scripts/nav-config";
 
-interface Props {
+interface Props extends NavBarProps {
     config: NavConfig;
     active?: string;
     switchTheme?: boolean;

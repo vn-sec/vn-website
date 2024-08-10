@@ -1,0 +1,133 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Anchor from "@/components/helpers/AnchorPadNavTop.astro";
+import MarkdownWithIcon, { type Props as MarkdownProps } from "./MarkdownWithIcon.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+    /**
+     * Markdown content (inline)
+     */
+    title?: markdown;
+    anchor?: string | boolean;
+    /**
+     * Markdown content (inline)
+     */
+    subtitle?: markdown;
+    /**
+     * Markdown content
+     */
+    content?: markdown;
+    mdOptions?: MarkdownProps["options"];
+}
+
+const { title, anchor: _anchor, subtitle, content, mdOptions, ...rest } = Astro.props as Props;
+
+const inlineMdOptions: MarkdownProps["options"] = Object.assign({}, mdOptions, { extractParagraph: true });
+
+const anchor = typeof _anchor === "string" ? _anchor : _anchor === true ? "page-title" : undefined;
+---
+
+<div {...rest} class:list={["page-title-box", rest.class, rest["class:list"]]}>
+    {
+        title && (
+            <a class="page-title-box__title" href={anchor && "#" + anchor}>
+                {anchor && <Anchor id={anchor} />}
+                <div data-literal>
+                    <span>{<MarkdownWithIcon md={title} options={inlineMdOptions} />}</span>
+                </div>
+                <div data-literal-after />
+            </a>
+        )
+    }
+    {
+        subtitle?.trim() && (
+            <div class="page-title-box__subtitle">
+                <span>{<MarkdownWithIcon md={subtitle} options={inlineMdOptions} />}</span>
+            </div>
+        )
+    }
+    <div class="page-title-box__content">
+        {content && <MarkdownWithIcon md={content} options={mdOptions} />}<slot />
+    </div>
+</div>
+
+<style lang="scss">
+    @import "@/styles/background-underline.scss";
+    $underline-width: min(0.15em, 5px);
+    $underline-padding-bottom: min(0.15em, 5px);
+    .page-title-box {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        line-height: 1.5;
+        .page-title-box__title {
+            display: flex;
+            box-sizing: border-box;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 0.5em 0;
+            cursor: pointer;
+            color: var(--font-color);
+            &:hover {
+                color: var(--font-color-2);
+            }
+            [data-literal] {
+                @include underline-bg-color(currentColor, transparent);
+                @include underline-bg-width(100%, 0%);
+                @include underline-bg-posX(0%, 100%);
+            }
+            $move-line-width: 0.5em;
+            $move-line-pad: 0.75em;
+            $move-line-duration: 0.5s;
+            [data-literal-after] {
+                width: calc($move-line-width + $move-line-pad);
+                @include underline-bg-color(currentColor, transparent);
+                @include underline-bg-width($move-line-width, 0%);
+                @include underline-bg-posX(0%, 100%);
+                transition: background-position-x $move-line-duration ease-in-out;
+            }
+            &:hover [data-literal-after] {
+                @include underline-bg-posX($move-line-pad, 100%);
+            }
+        }
+        .page-title-box__subtitle {
+            display: block;
+            box-sizing: border-box;
+            font-size: 1.2em;
+            margin: 0.5em 0;
+            color: var(--font-color);
+        }
+        .page-title-box__content {
+            display: block;
+            box-sizing: border-box;
+            line-height: 1.75;
+            font-size: 1em;
+            color: var(--font-color);
+            margin: 1.75em 0;
+        }
+    }
+</style>
+
+<style lang="scss" is:global>
+    @mixin a-hover($color, $color-hover) {
+        a {
+            color: $color;
+            &:hover {
+                color: $color-hover;
+            }
+        }
+    }
+    .page-title-box__title {
+        @include a-hover(var(--font-color), var(--secondary-color));
+    }
+    .page-title-box__subtitle {
+        @include a-hover(var(--font-color), var(--secondary-color));
+    }
+    .page-title-box__content {
+        p {
+            margin: 1em 0;
+        }
+    }
+</style>

@@ -1,0 +1,156 @@
+---
+import Layout, { type Props as LayoutProps } from "@/layouts/Layout.astro";
+import SectionLayoutScroll from "@/components/helpers/SectionLayoutScroll.astro";
+export const ScrollSection = SectionLayoutScroll;
+
+type RemoveKey<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+export interface Props extends RemoveKey<LayoutProps, "padTopNav"> {}
+
+const { ...layoutProps } = Astro.props;
+---
+
+<Layout {...layoutProps} padTopNav={false}>
+    <div class="window-scroll">
+        <slot />
+    </div>
+</Layout>
+
+<script>
+    const winScrollEl = document.querySelector(".window-scroll");
+    let hasProgramScrolled = false;
+    const scrollY = {
+        old: window.scrollY,
+        new: window.scrollY,
+        update(y: number) {
+            // let scrollHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+            let scrollHeight = document.documentElement.scrollHeight;
+            let maxScrollY = scrollHeight - window.innerHeight;
+            if (y < 0) y = 0;
+            if (y > maxScrollY) y = maxScrollY;
+            this.old = this.new;
+            this.new = y;
+        },
+        get() {
+            return this.new;
+        },
+        delta() {
+            return this.new - this.old;
+        },
+        setAll(y: number) {
+            if (y < 0) y = 0;
+            if (y > window.innerHeight) y = window.innerHeight;
+            this.old = y;
+            this.new = y;
+        }
+    };
+    function scrollTo(x: number, y: number) {
+        hasProgramScrolled = true;
+        window.scrollTo({
+            top: y,
+            left: x,
+            behavior: "smooth"
+        });
+    }
+    function listen(cb: CallableFunction) {
+        let ticking = false;
+        const wrapper = async (e: Event) => {
+            if (e.type !== "wheel" && hasProgramScrolled) {
+                hasProgramScrolled = false;
+                return;
+            }
+            if (!ticking) {
+                ticking = true;
+                await cb(e);
+                ticking = false;
+            }
+        };
+        document.addEventListener("scrollend", wrapper, { passive: false });
+        document.addEventListener("wheel", wrapper, { passive: false });
+        document.addEventListener("touchstart", wrapper, { passive: false });
+        document.addEventListener("touchmove", wrapper, { passive: false });
+        document.addEventListener("touchend", wrapper, { passive: false });
+    }
+    let lastTouchMoveClientY = 0;
+    let lastTouchDeltaY = 0;
+    listen((e: Event) => {
+        let screenDeltaForTouch = 0;
+        if (e.type === "touchstart") {
+            lastTouchMoveClientY = (e as TouchEvent).touches[0].clientY;
+            lastTouchDeltaY = 0;
+            return;
+        }
+        if (e.type === "touchmove") {
+            let curClientY = (e as TouchEvent).touches[0].clientY;
+            lastTouchDeltaY = curClientY - lastTouchMoveClientY;
+            lastTouchMoveClientY = curClientY;
+            return;
+        }
+        if (e.type === "touchend") {
+            screenDeltaForTouch = -lastTouchDeltaY;
+        }
+        const childEls = Array.from(winScrollEl?.querySelectorAll(".window-scroll--section") || []);
+        let winHeight = window.innerHeight;
+        let deltaY = 0;
+        if (e.type === "wheel") {
+            scrollY.update(scrollY.get() + (e as WheelEvent).deltaY);
+            deltaY = scrollY.delta();
+        } else {
+            scrollY.update(window.scrollY);
+        }
+        const prevent = () => (e.type === "touchend" ? e.stopPropagation() : e.preventDefault());
+        const inWindow = (l: number) => l > 0 && l < winHeight;
+        const getEl = scrollY.delta() < 0 ? () => childEls.pop() : () => childEls.shift();
+        let el: ReturnType<typeof getEl>;
+        while ((el = getEl())) {
+            const rect = el.getBoundingClientRect();
+            let elTop = rect.top; // top of el to top of window
+            let elBottom = rect.top + rect.height; // bottom of el to top of window
+            function scrollDown() {
+                let curElTop = elTop - deltaY;
+                // detect old elTop first, else detect new elTop
+                if (inWindow(elTop) || inWindow(curElTop)) {
+                    let toY = typeof (el as any).offsetTop === "number" ? (el as any).offsetTop : scrollY.get() + elTop;
+                    prevent();
+                    scrollTo(window.scrollX, toY);
+                    scrollY.setAll(toY);
+                    return true;
+                }
+                return false;
+            }
+            function scrollUp() {
+                let curElBottom = elBottom - deltaY;
+                // detect old elBottom first, else detect new elBottom
+                if (inWindow(elBottom) || inWindow(curElBottom)) {
+                    let toY = typeof (el as any).offsetTop === "number" ? (el as any).offsetTop : scrollY.get() + elTop;
+                    toY = toY - winHeight + rect.height;
+                    prevent();
+                    scrollTo(window.scrollX, toY);
+                    scrollY.setAll(toY);
+                    return true;
+                }
+                return false;
+            }
+            if (screenDeltaForTouch > 0) {
+                if (scrollDown()) break; // scroll down
+            } else if (screenDeltaForTouch < 0) {
+                if (scrollUp()) break; // scroll up
+            } else if (scrollY.delta() > 0) {
+                if (scrollDown()) break; // scroll down
+            } else if (scrollY.delta() < 0) {
+                if (scrollUp()) break; // scroll up
+            }
+        }
+    });
+</script>
+
+<style lang="scss">
+    @import "@/styles/defines.scss";
+    @import "@/styles/scroll.scss";
+    .window-scroll {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        @include scroll(8px);
+    }
+</style>

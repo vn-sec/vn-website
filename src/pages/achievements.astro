@@ -1,0 +1,46 @@
+---
+import Layout from "@/layouts/LayoutPage.astro";
+import Page from "@/components/Page.astro";
+import Section from "@/components/Section.astro";
+import SectionTitle from "@/components/SectionTitle.astro";
+import SectionBody from "@/components/SectionBody.astro";
+import MarkdownWithIcon from "@/components/MarkdownWithIcon.astro";
+import { Extractor } from "@/scripts/achievements-md";
+import siteConfig, { loadConfigIfUrlString } from "@/site-config";
+
+const _conf = siteConfig.page.achievements ?? [];
+const conf = Array.isArray(_conf) ? { content: _conf } : _conf;
+const pageconf = await loadConfigIfUrlString<typeof conf>(conf, f => {
+    const extractor = new Extractor();
+    return extractor.parse(f);
+});
+---
+
+<Layout title="V&N Team" autoHideNav={true} useBg={true} active="achievements" padTopNav={true}>
+    <Page title={pageconf.title} subtitle={pageconf.subtitle} anchor={true} mdOptions={{ externalLink: true }}>
+        <Section data-section="achievements">
+            {
+                pageconf.content.map(info => (
+                    <>
+                        <SectionTitle anchorPrefix="y" text={info.title} withIcon={true} />
+                        <SectionBody>
+                            <MarkdownWithIcon md={info.content} options={{ externalLink: true }} />
+                        </SectionBody>
+                    </>
+                ))
+            }
+        </Section>
+    </Page>
+</Layout>
+
+<style lang="scss" is:global>
+    [data-section="achievements"] {
+        margin-top: 3.5rem !important;
+        a {
+            color: var(--font-color);
+            &:hover {
+                color: var(--secondary-color);
+            }
+        }
+    }
+</style>

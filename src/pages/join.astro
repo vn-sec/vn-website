@@ -1,0 +1,34 @@
+---
+import Layout from "@/layouts/LayoutPage.astro";
+import Page from "@/components/Page.astro";
+import Markdown from "@/scripts/markdown";
+import siteConfig, { loadConfigIfUrlString } from "@/site-config";
+
+const _conf = siteConfig.page.join ?? { content: "" };
+const pageconf = await loadConfigIfUrlString<typeof _conf>(_conf, f => {
+    const data = Markdown.parse(f);
+    if (Markdown.isYamlRecord(data.frontmatter)) {
+        return {
+            title: data.frontmatter["title"] ? data.frontmatter["title"].toString() : undefined,
+            subtitle: data.frontmatter["subtitle"] ? data.frontmatter["subtitle"].toString() : undefined,
+            content: data.content
+        };
+    } else {
+        return {
+            content: data.content
+        };
+    }
+});
+---
+
+<Layout title="V&N Team" autoHideNav={true} useBg={true} active="join" padTopNav={true}>
+    <Page
+        title={pageconf.title}
+        subtitle={pageconf.subtitle}
+        anchor={true}
+        content={pageconf.content}
+        mdOptions={{ externalLink: true }}
+    />
+</Layout>
+
+<style lang="scss"></style>

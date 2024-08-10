@@ -11,7 +11,10 @@ export interface Props {
     defaultTheme?: "light" | "dark";
     enableThemeSwitch?: boolean;
     showFooter?: boolean;
-    // If true, the slot will be placed below the navbar
+    autoHideNav?: boolean;
+    /**
+     * If true, the slot will be placed below the navbar
+     */
     padTopNav?: boolean;
 }
 
@@ -22,6 +25,7 @@ const {
     defaultTheme = "dark",
     enableThemeSwitch = false,
     showFooter = true,
+    autoHideNav = true,
     padTopNav = true
 } = Astro.props;
 ---
@@ -44,7 +48,12 @@ const {
                 </div>
             )
         }
-        <NavBarConfigurable config={NavBarConfig.navbar} active={active} switchTheme={enableThemeSwitch} />
+        <NavBarConfigurable
+            autoHide={autoHideNav}
+            config={NavBarConfig.navbar}
+            active={active}
+            switchTheme={enableThemeSwitch}
+        />
         <main class:list={[{ "pad-top-nav": padTopNav }]}><slot /></main>
         {showFooter && <Footer />}
     </body>

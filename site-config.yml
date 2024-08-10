@@ -1,22 +1,31 @@
+title: V&N Team
+
 navbar:
   title:
     text: :vn(title):V&N Team
     link: /
   content:
-    - text: Home
+    - id: home
+      text: Home
       link: /
-    - text: Honor
-      link: /honor
-    - text: Members
+    - id: achievements
+      text: Achievements
+      link: /achievements
+    - id: members
+      text: Members
       link: /members
-    - Join Us
+    - id: join
+      text: Join Us
+      link: /join
   icon:
-    - icon: ':github:'
+    - icon: ":github:"
       link: https://github.com/Cnily03/vn-website
 
 page:
-  index:
-    title: V&N Team
-    description: An Union CTF Team From China
-  honor: ./config/honor.md
+  index: ./config/index.yml
+  achievements: ./config/achievements.md
   members: ./config/members.yml
+  join: ./config/join.md
+
+footer:
+  copyright: Copyright (c) V&N Team

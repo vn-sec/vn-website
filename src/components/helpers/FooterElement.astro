@@ -1,0 +1,32 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MarkdownWithIcon, { type Props as MarkdownProps } from "@/components/MarkdownWithIcon.astro";
+
+interface Props extends HTMLAttributes<"span"> {
+    md?: MarkdownProps["md"];
+    options?: MarkdownProps["options"];
+}
+
+const { md, options, ...rest } = Astro.props as Props;
+
+const inlineOpts: MarkdownProps["options"] = Object.assign({}, options, {
+    extractParagraph: true // inline
+});
+---
+
+{
+    md && (
+        <span {...rest}>
+            <MarkdownWithIcon md={md} options={inlineOpts} />
+        </span>
+    )
+}
+
+<style lang="scss">
+    span {
+        letter-spacing: normal;
+        user-select: text;
+        display: inline-block;
+        margin: 0.2rem 0.75rem;
+    }
+</style>

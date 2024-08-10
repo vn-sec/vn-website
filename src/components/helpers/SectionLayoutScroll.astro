@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+    /**
+     * pad top
+     */
+    padNavTop?: boolean;
+}
+
+const { padNavTop = false, ...rest } = Astro.props;
+---
+
+<div {...rest} class:list={["window-scroll--section", rest.class, rest["class:list"]]} data-scroll-section-pad-nav={padNavTop}>
+    <slot />
+</div>
+
+<style lang="scss">
+    @import "@/styles/defines.scss";
+    .window-scroll--section {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 100vh;
+        scroll-behavior: smooth;
+        &[data-scroll-section-pad-nav] {
+            padding-top: calc($nav-height + $nav-border-width);
+        }
+    }
+</style>

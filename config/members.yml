@@ -1,31 +1,35 @@
-# - name:        # name (required)
-#   avatar:      # link for avatar image
-#   tags: Web    # array or string
-#   description: # markdown supported
+title: Members
+subtitle: Want to join us? [Click here](~/join).
 
-- name: Alice
-  # avatar:
-  tags: Misc
-  description: This is a description.
+content:
+  # - name:        # name (required)
+  #   avatar:      # link for avatar image
+  #   tags: Web    # array or string
+  #   description: # markdown supported
 
-- name: Cnily03
-  avatar: https://cdn.cnily.top/avatar.png?t=1
-  tags: Web
-  description: "1"
-  link: https://vnteam.cn
+  - name: Alice
+    # avatar:
+    tags: Misc
+    description: This is a description.
 
-- name: Bob
-  avatar: test.jpg
-  tags: Reverse
-  description: This is a very long description !!! Yes, very long...
-  link: https://vnteam.cn
+  - name: Cnily03
+    avatar: https://cdn.cnily.top/avatar.png?t=1
+    tags: Web
+    description: "1"
+    link: https://vnteam.cn
 
-- name: Man!
-  # avatar:
-  tags: Re
-  description: Show a [link](https://vnteam.cn) here.
+  - name: Bob
+    avatar: test.jpg
+    tags: Reverse
+    description: This is a very long description !!! Yes, very long...
+    link: https://vnteam.cn
 
-- name: NINA
-  # avatar:
-  tags: Misc
-  description: Girls Band Cry !!!!!
+  - name: Man!
+    # avatar:
+    tags: Re
+    description: Show a [link](https://vnteam.cn) here.
+
+  - name: NINA
+    # avatar:
+    tags: Misc
+    description: Girls Band Cry !!!!!
