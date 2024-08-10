@@ -3,21 +3,17 @@ import Layout from "@/layouts/LayoutPage.astro";
 import Page from "@/components/Page.astro";
 import PersonInfoCard from "@/components/PersonInfoCard.astro";
 
-import siteConfig, { loadConfigIfUrlString } from "@/site-config";
+import { parsedSiteConfig as psc } from "@/site-config";
 
-const _conf = siteConfig.page.members ?? [];
-const conf = Array.isArray(_conf) ? { content: _conf } : _conf;
-const pageconf = await loadConfigIfUrlString<typeof conf>(conf, (f, { YAML }) => {
-    let c = YAML.parse(f);
-    return Array.isArray(c) ? { content: c } : c;
-});
+const conf = await psc.page.members;
+const doc_title = [conf.title, await psc.title].filter(Boolean).join(" | ");
 ---
 
-<Layout title="V&N Team" useBg={true} autoHideNav={true} active="members" padTopNav={true}>
-    <Page title={pageconf.title} subtitle={pageconf.subtitle} anchor={true} mdOptions={{ externalLink: true }}>
+<Layout title={doc_title} useBg={true} autoHideNav={true} active="members" padTopNav={true}>
+    <Page title={conf.title} subtitle={conf.subtitle} anchor={true} mdOptions={{ externalLink: true }}>
         <div class="member-box">
             {
-                pageconf.content.map(m => (
+                conf.content.map(m => (
                     <PersonInfoCard
                         class="member-card"
                         avatar={m.avatar}

@@ -1,4 +1,4 @@
-import Markdown from "./markdown";
+import Markdown from "../../scripts/markdown";
 
 import type { AchievementsInfo, SiteConfig } from "@/types/site-config";
 

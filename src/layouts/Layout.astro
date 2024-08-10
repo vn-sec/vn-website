@@ -1,8 +1,9 @@
 ---
 import FaviconHeader from "@/components/FaviconHeader.astro";
-import NavBarConfig from "@/site-config";
 import NavBarConfigurable from "@/components/NavBarConfigurable.astro";
 import Footer from "@/components/Footer.astro";
+
+import { parsedSiteConfig as psc } from "@/site-config";
 
 export interface Props {
     title: string;
@@ -28,6 +29,8 @@ const {
     autoHideNav = true,
     padTopNav = true
 } = Astro.props;
+
+const conf = await psc.navbar;
 ---
 
 <!doctype html>
@@ -48,12 +51,7 @@ const {
                 </div>
             )
         }
-        <NavBarConfigurable
-            autoHide={autoHideNav}
-            config={NavBarConfig.navbar}
-            active={active}
-            switchTheme={enableThemeSwitch}
-        />
+        <NavBarConfigurable autoHide={autoHideNav} config={conf} active={active} switchTheme={enableThemeSwitch} />
         <main class:list={[{ "pad-top-nav": padTopNav }]}><slot /></main>
         {showFooter && <Footer />}
     </body>

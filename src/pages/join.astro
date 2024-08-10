@@ -1,32 +1,18 @@
 ---
 import Layout from "@/layouts/LayoutPage.astro";
 import Page from "@/components/Page.astro";
-import Markdown from "@/scripts/markdown";
-import siteConfig, { loadConfigIfUrlString } from "@/site-config";
+import { parsedSiteConfig as psc } from "@/site-config";
 
-const _conf = siteConfig.page.join ?? { content: "" };
-const pageconf = await loadConfigIfUrlString<typeof _conf>(_conf, f => {
-    const data = Markdown.parse(f);
-    if (Markdown.isYamlRecord(data.frontmatter)) {
-        return {
-            title: data.frontmatter["title"] ? data.frontmatter["title"].toString() : undefined,
-            subtitle: data.frontmatter["subtitle"] ? data.frontmatter["subtitle"].toString() : undefined,
-            content: data.content
-        };
-    } else {
-        return {
-            content: data.content
-        };
-    }
-});
+const conf = await psc.page.join;
+const doc_title = [conf.title, await psc.title].filter(Boolean).join(" | ");
 ---
 
-<Layout title="V&N Team" autoHideNav={true} useBg={true} active="join" padTopNav={true}>
+<Layout title={doc_title} autoHideNav={true} useBg={true} active="join" padTopNav={true}>
     <Page
-        title={pageconf.title}
-        subtitle={pageconf.subtitle}
+        title={conf.title}
+        subtitle={conf.subtitle}
         anchor={true}
-        content={pageconf.content}
+        content={conf.content}
         mdOptions={{ externalLink: true }}
     />
 </Layout>

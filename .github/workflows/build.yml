@@ -8,6 +8,33 @@ permissions:
   contents: read
 
 jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # if lastUpdated is not enabled, no need to set
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+          run_install: false
+      # - uses: oven-sh/setup-bun@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Check
+        run: pnpm run check
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -33,4 +60,4 @@ jobs:
         run: pnpm install
 
       - name: Build
-        run: pnpm run build:check
+        run: pnpm run build

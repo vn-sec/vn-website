@@ -5,19 +5,17 @@ import Page from "@/components/Page.astro";
 import LogoAnimate from "@/components/LogoAnimate.astro";
 import MarkdownWithIcon from "@/components/MarkdownWithIcon.astro";
 
-import siteConfig, { loadConfigIfUrlString } from "@/site-config";
+import { parsedSiteConfig as psc } from "@/site-config";
 
-const conf = siteConfig.page["index"];
-const pageconf = await loadConfigIfUrlString<typeof conf>(conf, (f, { YAML }) => {
-    return YAML.parse(f);
-});
+const doc_title = await psc.title;
+const conf = await psc.page.index;
 ---
 
-<Layout title="V&N Team" useBg={true} autoHideNav={false} active="home">
+<Layout title={doc_title} useBg={true} autoHideNav={false} active="home">
     <ScrollSection padNavTop={true} data-window-scroll="index">
         <div class="container">
             <div class="logo-container">
-                <LogoAnimate title={pageconf.title} description={pageconf.description} />
+                <LogoAnimate title={conf.title} description={conf.description} />
             </div>
         </div>
     </ScrollSection>
@@ -25,13 +23,13 @@ const pageconf = await loadConfigIfUrlString<typeof conf>(conf, (f, { YAML }) =>
         <div class="container">
             <WindowLayoutPage data-window-win>
                 <Page
-                    title={pageconf.about.title}
-                    subtitle={pageconf.about.subtitle}
+                    title={conf.about.title}
+                    subtitle={conf.about.subtitle}
                     anchor={true}
                     mdOptions={{ externalLink: true }}
                 >
                     <span data-window-win-content>
-                        <MarkdownWithIcon md={pageconf.about.content} options={{ externalLink: true }} />
+                        <MarkdownWithIcon md={conf.about.content} options={{ externalLink: true }} />
                     </span>
                 </Page>
             </WindowLayoutPage>
@@ -53,7 +51,7 @@ const pageconf = await loadConfigIfUrlString<typeof conf>(conf, (f, { YAML }) =>
                 height: 100%;
                 box-sizing: border-box;
                 display: grid;
-                grid-template-rows: 2fr auto 3fr
+                grid-template-rows: 2fr auto 3fr;
                 // place-items: center;
             }
             .logo-container {

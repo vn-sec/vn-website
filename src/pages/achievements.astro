@@ -5,22 +5,17 @@ import Section from "@/components/Section.astro";
 import SectionTitle from "@/components/SectionTitle.astro";
 import SectionBody from "@/components/SectionBody.astro";
 import MarkdownWithIcon from "@/components/MarkdownWithIcon.astro";
-import { Extractor } from "@/scripts/achievements-md";
-import siteConfig, { loadConfigIfUrlString } from "@/site-config";
+import { parsedSiteConfig as psc } from "@/site-config";
 
-const _conf = siteConfig.page.achievements ?? [];
-const conf = Array.isArray(_conf) ? { content: _conf } : _conf;
-const pageconf = await loadConfigIfUrlString<typeof conf>(conf, f => {
-    const extractor = new Extractor();
-    return extractor.parse(f);
-});
+const conf = await psc.page.achievements;
+const doc_title = [conf.title, await psc.title].filter(Boolean).join(" | ");
 ---
 
-<Layout title="V&N Team" autoHideNav={true} useBg={true} active="achievements" padTopNav={true}>
-    <Page title={pageconf.title} subtitle={pageconf.subtitle} anchor={true} mdOptions={{ externalLink: true }}>
+<Layout title={doc_title} autoHideNav={true} useBg={true} active="achievements" padTopNav={true}>
+    <Page title={conf.title} subtitle={conf.subtitle} anchor={true} mdOptions={{ externalLink: true }}>
         <Section data-section="achievements">
             {
-                pageconf.content.map(info => (
+                conf.content.map(info => (
                     <>
                         <SectionTitle anchorPrefix="y" text={info.title} withIcon={true} />
                         <SectionBody>

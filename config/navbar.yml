@@ -1,0 +1,19 @@
+title:
+  text: :vn(title):V&N Team
+  link: /
+content:
+  - id: home
+    text: Home
+    link: /
+  - id: achievements
+    text: Achievements
+    link: /achievements
+  - id: members
+    text: Members
+    link: /members
+  - id: join
+    text: Join Us
+    link: /join
+icon:
+  - icon: ":github:"
+    link: https://github.com/Cnily03/vn-website
