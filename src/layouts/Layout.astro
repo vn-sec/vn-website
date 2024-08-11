@@ -17,6 +17,7 @@ export interface Props {
      * If true, the slot will be placed below the navbar
      */
     padTopNav?: boolean;
+    padTopType?: "margin" | "padding";
 }
 
 const {
@@ -27,7 +28,8 @@ const {
     enableThemeSwitch = false,
     showFooter = true,
     autoHideNav = true,
-    padTopNav = true
+    padTopNav = true,
+    padTopType = "padding"
 } = Astro.props;
 
 const conf = await psc.navbar;
@@ -52,7 +54,7 @@ const conf = await psc.navbar;
             )
         }
         <NavBarConfigurable autoHide={autoHideNav} config={conf} active={active} switchTheme={enableThemeSwitch} />
-        <main class:list={[{ "pad-top-nav": padTopNav }]}><slot /></main>
+        <main class:list={[{ "pad-top-nav": padTopNav }]} data-pad-top-type={padTopNav && padTopType}><slot /></main>
         {showFooter && <Footer />}
     </body>
 </html>
@@ -98,8 +100,13 @@ const conf = await psc.navbar;
             box-sizing: border-box;
             min-height: 100vh;
         }
-        & > main.pad-top-nav {
+        & > main.pad-top-nav[data-pad-top-type="margin"] {
+            margin-top: calc($nav-height + $nav-border-width);
+            min-height: calc(100vh - $nav-height - $nav-border-width);
+        }
+        & > main.pad-top-nav[data-pad-top-type="padding"] {
             padding-top: calc($nav-height + $nav-border-width);
+            min-height: 100vh;
         }
     }
     code {

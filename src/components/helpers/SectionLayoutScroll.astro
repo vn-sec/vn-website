@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "astro/types";
 
 interface Props extends HTMLAttributes<"div"> {
     /**
-     * pad top
+     * The margin-top will be set with the nav height
      */
     padNavTop?: boolean;
 }
@@ -25,6 +25,7 @@ const { padNavTop = false, ...rest } = Astro.props;
         scroll-behavior: smooth;
         &[data-scroll-section-pad-nav] {
             padding-top: calc($nav-height + $nav-border-width);
+            min-height: calc(100vh - $nav-height - $nav-border-width);
         }
     }
 </style>

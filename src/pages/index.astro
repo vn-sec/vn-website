@@ -47,7 +47,7 @@ const conf = await psc.page.index;
                 $padding-top: 3rem;
                 $padding-bottom: 5rem;
                 padding: $padding-top 0 $padding-bottom;
-                min-height: 100vh;
+                min-height: calc(100vh - $nav-height - $nav-border-width);
                 height: 100%;
                 box-sizing: border-box;
                 display: grid;
@@ -65,7 +65,7 @@ const conf = await psc.page.index;
         }
         [data-window-scroll="about"] {
             .container {
-                min-height: 100vh;
+                min-height: calc(100vh - $nav-height - $nav-border-width);
                 height: 100%;
                 box-sizing: border-box;
                 padding-bottom: calc($nav-height + $nav-border-width + 2rem);
