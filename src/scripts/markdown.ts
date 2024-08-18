@@ -35,13 +35,25 @@ export class Markdown {
         this.mdit.renderer.rules["link_open"] = function (tokens, idx, options, _, self) {
             let href = tokens[idx].attrGet('href');
             if (href) {
+                // :class:
+                if (href.startsWith(':')) {
+                    let classes = /^:(.*?):/.exec(href);
+                    if (classes) {
+                        let cls = classes[1];
+                        tokens[idx].attrSet('class', cls);
+                        href = href.slice(classes[0].length);
+                    }
+                }
+                // external
+                // '!' for external link
+                // '~' for internal link
                 let external = opts.externalLink
                 if (href.startsWith('#')) external = false;
-                if (href.startsWith('!')) {
+                else if (href.startsWith('!')) {
                     external = true;
                     href = href.slice(1);
                 }
-                if (href.startsWith('~')) {
+                else if (href.startsWith('~')) {
                     external = false;
                     href = href.slice(1);
                 }

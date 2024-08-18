@@ -128,12 +128,22 @@ const conf = await psc.navbar;
             monospace;
     }
     a {
-        color: var(--primary-color);
         text-decoration: none;
         cursor: pointer;
         transition: color 0.25s ease;
-        &:hover {
-            color: var(--secondary-color);
+
+        &,
+        &.link-normal {
+            color: var(--primary-color);
+            &:hover {
+                color: var(--secondary-color);
+            }
+        }
+        &.link-obscure {
+            color: var(--font-color);
+            &:hover {
+                color: var(--font-color-2);
+            }
         }
     }
     .background {
