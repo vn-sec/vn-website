@@ -9,7 +9,8 @@ export interface MarkdownOptions {
 
 const defaultOptions: MarkdownOptions = {
     externalLink: true,
-    extractParagraph: false
+    extractParagraph: false,
+    html: true
 }
 
 export type YAMLReturnType = Record<string, any> | string | number | boolean | null;
@@ -76,11 +77,12 @@ export class Markdown {
 
     protected static extractFrontMatter(text: string) {
         let fm_text = '';
-        if (text.startsWith('---\n')) {
-            const end = text.indexOf('\n---\n');
-            if (end !== -1) {
-                fm_text = text.slice(4, end);
-                text = text.slice(end + 5);
+        const match_start = text.match(/^---\r?\n/);
+        if (match_start) {
+            const match_end = text.match(/\r?\n---\r?\n/);
+            if (match_end) {
+                fm_text = text.slice(match_start[0].length, match_end.index!);
+                text = text.slice(match_end.index! + match_end[0].length);
             }
         }
         return { fm_text, text }
