@@ -3,16 +3,16 @@ title:
   link: /
 content:
   - id: home
-    text: Home
+    text: 主页
     link: /
   - id: achievements
-    text: Achievements
+    text: 成就
     link: /achievements
   - id: members
-    text: Members
+    text: 团队成员
     link: /members
   - id: join
-    text: Join Us
+    text: 加入我们
     link: /join
 icon:
   - icon: ":github:"
