@@ -16,7 +16,8 @@ const {
     decoding = "async",
     width = "100%",
     height = "100%",
-    rounded = true
+    rounded = true,
+    ...rest
 } = Astro.props;
 ---
 
@@ -28,6 +29,7 @@ const {
     width={width}
     height={height}
     data-rounded={rounded.toString()}
+    {...rest}
 />
 
 <style lang="scss">

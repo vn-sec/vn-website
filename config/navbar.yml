@@ -8,6 +8,7 @@ content:
   - id: achievements
     text: Achievements
     link: /achievements
+    target: _blank
   - id: members
     text: Members
     link: /members

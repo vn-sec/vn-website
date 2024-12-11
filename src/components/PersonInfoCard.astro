@@ -53,8 +53,35 @@ const descriptionHtml = md.render(description);
     {...rest}
 >
     <div class="card-avatar">
-        {avatar ? <Avatar src={avatar} rounded={true} /> : <Icon name="avatar" data-avatar-img />}
+        {avatar ? <Icon name="avatar" data-avatar-img data-avatar-fallback-wait /> : ""}
+        {avatar ? <Avatar src={avatar} rounded={true} data-avatar-has /> : <Icon name="avatar" data-avatar-img />}
     </div>
+    <script>
+        // image error, switch to fallback image
+        function onImageError(event: Event) {
+            const img = event.target as HTMLImageElement;
+            const foundFallback = img.parentElement!.querySelector("[data-avatar-fallback-wait]");
+            if (foundFallback) {
+                foundFallback.removeAttribute("data-avatar-fallback-wait");
+                foundFallback.setAttribute("data-avatar-fallback", "");
+                img.remove();
+            }
+        }
+        // image load, remove fallback image
+        function onImageLoad(event: Event) {
+            const img = event.target as HTMLImageElement;
+            const foundFallback = img.parentElement!.querySelector("[data-avatar-fallback-wait]");
+            if (foundFallback) {
+                foundFallback.remove();
+            }
+        }
+        // listen to image load and error events
+        const avatars = document.querySelectorAll("[data-avatar-has]");
+        avatars.forEach(avatar => {
+            avatar.addEventListener("error", onImageError);
+            avatar.addEventListener("load", onImageLoad);
+        });
+    </script>
     <div class="card-info">
         <div class="card-info--title">
             <div class="card-info--title__name">
@@ -112,6 +139,9 @@ const descriptionHtml = md.render(description);
         height: 100%;
         width: 100%;
         border-radius: 50%;
+    }
+    [data-avatar-fallback-wait] {
+        display: none;
     }
     .card-wrapper {
         text-decoration: none;
