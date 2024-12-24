@@ -49,5 +49,6 @@ export interface SiteConfig {
         copyright?: markdown;
         icp?: markdown;
         gongan?: markdown;
+        extra?: markdown;
     }
 }
