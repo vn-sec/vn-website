@@ -8,21 +8,24 @@ const MdOpts: Partial<MarkdownOptions> = {
     externalLink: true
 };
 
-const conf = siteConfig.footer;
+function toArray<T>(val: T | T[]): T[] {
+    return Array.isArray(val) ? val : [val];
+}
+
+const conf = toArray(siteConfig.footer).map(toArray);
 ---
 
 <div class="footer">
     <div class="footer-box">
-        <div class="footer-line">
-            <FooterElement md={conf.copyright} options={MdOpts} />
-        </div>
-        <div class="footer-line">
-            <FooterElement md={conf.icp} options={MdOpts} />
-            <FooterElement md={conf.gongan} options={MdOpts} />
-        </div>
-        <div class="footer-line">
-            <FooterElement md={conf.extra} options={MdOpts} />
-        </div>
+        {
+            conf.map((line, i) => (
+                <div class="footer-line" data-key={i}>
+                    {line.map((md, j) => (
+                        <FooterElement md={md} options={MdOpts} data-key={i + "-" + j} />
+                    ))}
+                </div>
+            ))
+        }
     </div>
 </div>
 
@@ -40,7 +43,7 @@ const conf = siteConfig.footer;
             max-width: 100%;
             text-align: center;
             .footer-line {
-                margin: 0.1rem auto;
+                margin: 0.2rem auto;
                 box-sizing: border-box;
                 width: max-content;
                 text-align: justify;

@@ -45,10 +45,5 @@ export interface SiteConfig {
         "members"?: WithConfigUrl<MemberInfo[] | PageConfig<MemberInfo[]>>;
         "join"?: WithConfigUrl<PageConfig>;
     }
-    footer: {
-        copyright?: markdown;
-        icp?: markdown;
-        gongan?: markdown;
-        extra?: markdown;
-    }
+    footer: markdown | markdown[] | (markdown | markdown[])[];
 }
