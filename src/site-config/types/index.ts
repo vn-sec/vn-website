@@ -47,6 +47,7 @@ export interface SiteConfig {
     }
     footer: {
         copyright?: markdown;
-        beian?: markdown;
+        icp?: markdown;
+        gongan?: markdown;
     }
 }

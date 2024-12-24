@@ -10,4 +10,5 @@ page:
 
 footer:
   copyright: Copyright (c) [V&N Team](:link-normal:!https://vnteam.cn)
-  beian: "[萌ICP备2024114514号-1](https://beian.miit.gov.cn/)"
+  icp: '[萌ICP备XXXXXXXX号](https://icp.gov.moe/)'
+  # gongan: '[浙公网安备XXXXXXXXXXXXXXX](https://beian.mps.gov.cn/#/query/webSearch?code=XXXXXXXXXXXXXXX)'
