@@ -12,8 +12,14 @@ const conf = siteConfig.footer;
 ---
 
 <div class="footer">
-    <div class="footer-container">
-        <FooterElement md={conf.copyright} options={MdOpts} />
+    <div class="footer-box">
+        <div class="footer-line">
+            <FooterElement md={conf.copyright} options={MdOpts} />
+        </div>
+        <div class="footer-line">
+            <FooterElement md={conf.icp} options={MdOpts} />
+            <FooterElement md={conf.gongan} options={MdOpts} />
+        </div>
     </div>
 </div>
 
@@ -22,17 +28,22 @@ const conf = siteConfig.footer;
         display: block;
         // position: absolute;
         // top: 100vh;
+        font-size: 0.95rem;
         width: 100%;
         background-color: var(--footer-background-color);
-        .footer-container {
+        .footer-box {
             margin: 0 auto;
-            padding: 2rem 1rem;
-            box-sizing: border-box;
-            width: max-content;
+            padding: 1.3rem 1rem;
             max-width: 100%;
-            text-align: justify;
-            text-align-last: justify;
-            user-select: none;
+            text-align: center;
+            .footer-line {
+                margin: 0.1rem auto;
+                box-sizing: border-box;
+                width: max-content;
+                text-align: justify;
+                text-align-last: justify;
+                user-select: none;
+            }
         }
     }
 </style>

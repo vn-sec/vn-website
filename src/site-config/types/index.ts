@@ -47,5 +47,7 @@ export interface SiteConfig {
     }
     footer: {
         copyright?: markdown;
+        icp?: markdown;
+        gongan?: markdown;
     }
 }
