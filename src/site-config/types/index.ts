@@ -47,5 +47,6 @@ export interface SiteConfig {
     }
     footer: {
         copyright?: markdown;
+        beian?: markdown;
     }
 }
